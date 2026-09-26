@@ -1,0 +1,33 @@
+{
+  "name": "gcp-pca-quiz-app",
+  "version": "1.0.0",
+  "description": "Google Cloud Professional Cloud Architect (PCA) Practice & Exam Simulator on Cloud Run with Firestore",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --env-file=.env --watch server.js",
+    "seed": "node scripts/seed-firestore.js"
+  },
+  "keywords": [
+    "gcp",
+    "pca",
+    "cloud-architect",
+    "cloud-run",
+    "firestore",
+    "quiz"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/firestore": "^7.11.0",
+    "compression": "^1.7.5",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.7.0",
+    "google-auth-library": "^9.15.1",
+    "helmet": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
