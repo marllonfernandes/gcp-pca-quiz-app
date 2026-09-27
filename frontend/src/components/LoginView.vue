@@ -125,7 +125,7 @@ function handleDevLogin() {
 
 function openLegal(tab) {
   quizStore.activeLegalTab = tab;
-  quizStore.currentView = 'legal-about';
+  quizStore.currentScreen = 'legal-about';
 }
 
 async function initGoogleSignIn() {

@@ -50,7 +50,6 @@ export const useQuizStore = defineStore('quiz', {
 
   getters: {
     isAuthenticated: (state) => Boolean(state.authToken && state.currentUser),
-    currentView: (state) => state.currentScreen,
     theme: (state) => (state.isDarkMode ? 'dark' : 'light'),
     lang: (state) => state.uiLanguage,
     

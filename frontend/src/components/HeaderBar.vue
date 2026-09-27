@@ -75,7 +75,7 @@
           <button 
             v-if="store.isAuthenticated"
             class="btn-exam-selector" 
-            @click="store.currentView = 'exam-selection'"
+            @click="store.currentScreen = 'exam-selection'"
             title="Alternar Trilha de Exame Google Cloud"
           >
             <span 

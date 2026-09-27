@@ -124,7 +124,7 @@ const store = useQuizStore();
 const isPt = computed(() => store.uiLanguage === 'pt');
 
 function goBack() {
-  store.currentView = 'dashboard';
+  store.currentScreen = 'dashboard';
 }
 </script>
 

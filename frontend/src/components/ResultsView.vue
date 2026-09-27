@@ -319,7 +319,7 @@ function retakeQuiz() {
 }
 
 function backToDashboard() {
-  quizStore.currentView = 'dashboard';
+  quizStore.currentScreen = 'dashboard';
 }
 </script>
 

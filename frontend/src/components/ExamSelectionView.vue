@@ -105,12 +105,12 @@ const toast = useToast();
 const isPt = computed(() => store.uiLanguage === 'pt');
 
 function goBack() {
-  store.currentView = 'dashboard';
+  store.currentScreen = 'dashboard';
 }
 
 async function selectTrack(examId) {
   if (examId === store.activeExamId) {
-    store.currentView = 'dashboard';
+    store.currentScreen = 'dashboard';
     return;
   }
 
@@ -126,7 +126,7 @@ async function selectTrack(examId) {
     life: 3000
   });
   
-  store.currentView = 'dashboard';
+  store.currentScreen = 'dashboard';
 }
 </script>
 

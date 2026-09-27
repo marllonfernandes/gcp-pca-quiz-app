@@ -5,15 +5,15 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <template v-if="!quizStore.isAuthenticated && quizStore.currentView !== 'legal-about'">
+      <template v-if="!quizStore.isAuthenticated && quizStore.currentScreen !== 'legal-about'">
         <LoginView />
       </template>
       <template v-else>
-        <LegalAboutView v-if="quizStore.currentView === 'legal-about'" />
-        <DashboardView v-else-if="quizStore.currentView === 'dashboard'" />
-        <QuizView v-else-if="quizStore.currentView === 'quiz'" />
-        <ResultsView v-else-if="quizStore.currentView === 'results'" />
-        <ExamSelectionView v-else-if="quizStore.currentView === 'exam-selection'" />
+        <LegalAboutView v-if="quizStore.currentScreen === 'legal-about'" />
+        <DashboardView v-else-if="quizStore.currentScreen === 'dashboard'" />
+        <QuizView v-else-if="quizStore.currentScreen === 'quiz'" />
+        <ResultsView v-else-if="quizStore.currentScreen === 'results'" />
+        <ExamSelectionView v-else-if="quizStore.currentScreen === 'exam-selection'" />
       </template>
     </main>
 
