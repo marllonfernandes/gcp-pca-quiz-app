@@ -36,16 +36,16 @@
   const I18N = {
     pt: {
       appTitle: "GCP Cloud Architect",
-      appSubtitle: "Plataforma Oficial de Simulados & Exames (PCA)",
+      appSubtitle: "Plataforma Independente de Preparação (PCA)",
       modeSimuladoBadge: "MODO SIMULADO",
       modeExameBadge: "MODO EXAME (120 min)",
       heroTitle: "Simulados Preparatórios para GCP Professional Cloud Architect",
-      heroSubtitle: "Baseado integralmente nas 420 questões oficiais dos bancos de prática e alinhado com a distribuição percentual de tópicos do Guia Oficial do Exame Google Cloud.",
+      heroSubtitle: "Banco de 420 questões práticas comentadas, com distribuição percentual e pesos alinhados ao Guia do Exame Google Cloud Professional Cloud Architect.",
       badge7Quizzes: "7 Simulados Completos",
       badge60Q: "60 Questões por Simulado",
       badge420Q: "420 Questões no Total",
-      badgeSecDist: "Distribuição Oficial por Seções",
-      badge120Min: "Temporizador Oficial de 120 min",
+      badgeSecDist: "Alinhado aos Domínios do Exame",
+      badge120Min: "Temporizador Simulado (120 min)",
       step1Title: "1. Escolha a Modalidade de Realização",
       modeStudyBadge: "Modo Estudo",
       modeStudyTitle: "Modo Simulado (Treinamento)",
@@ -56,11 +56,11 @@
       modeStudyF4: `${UI_ICONS.clock} <strong>Sem pressão de tempo:</strong> Cronômetro progressivo opcional.`,
       modeExamBadge: "Modo Real",
       modeExamTitle: "Modo Exame (Certificação)",
-      modeExamDesc: "Simulação idêntica à experiência da prova oficial do Google Cloud.",
+      modeExamDesc: "Simulação realista baseada no formato do exame de certificação Google Cloud.",
       modeExamF1: `${UI_ICONS.hourglass} <strong>Temporizador de 120 minutos:</strong> Contagem regressiva rígida.`,
       modeExamF2: `${UI_ICONS.ban} <strong>Não salva progresso:</strong> Não permite pausar ou continuar depois.`,
       modeExamF3: `${UI_ICONS.lock} <strong>Sem dicas:</strong> Feedback e justificativas exibidos apenas no final.`,
-      modeExamF4: `${UI_ICONS.chart} <strong>Critério oficial:</strong> Meta mínima de 70% para aprovação.`,
+      modeExamF4: `${UI_ICONS.chart} <strong>Critério de Referência:</strong> Meta recomendada de 70% para aprovação.`,
       step2Title: "2. Escolha o Quiz (60 Questões)",
       btnContinue: `${UI_ICONS.play} Continuar`,
       btnRestart: "Reiniciar",
@@ -73,7 +73,7 @@
       hintBtn: `${UI_ICONS.lightbulb} Ver Dica Arquitetural`,
       hintTitle: "Dica Arquitetural:",
       explanationTitle: `${UI_ICONS.book} Gabarito e Justificativa`,
-      officialAnswer: "Gabarito Oficial:",
+      officialAnswer: "Gabarito Comentado:",
       btnPrev: "← Anterior",
       btnNext: "Próxima →",
       btnReveal: "Ver Gabarito",
@@ -92,8 +92,8 @@
       statCorrect: "Acertos",
       statWrong: "Erros",
       statUnanswered: "Em Branco",
-      sectionBreakdownTitle: `${UI_ICONS.chart} Desempenho por Seção do Guia Oficial (PCA)`,
-      sectionBreakdownDesc: "Distribuição ponderada de acordo com o guia de exame oficial do Google Cloud Professional Cloud Architect.",
+      sectionBreakdownTitle: `${UI_ICONS.chart} Desempenho por Domínio do Guia de Exame (PCA)`,
+      sectionBreakdownDesc: "Distribuição ponderada de acordo com as 6 seções do Guia do Exame Professional Cloud Architect.",
       btnRetake: `${UI_ICONS.refresh} Refazer este Simulado`,
       btnSelectOther: `${UI_ICONS.document} Selecionar Outro Quiz`,
       reviewTitle: "Revisão Detalhada das Questões",
@@ -105,38 +105,46 @@
       correctAnswer: "Resposta Correta:",
       statusCorrect: `${UI_ICONS.checkCircle} (Correta)`,
       statusWrong: `${UI_ICONS.xCircle} (Incorreta)`,
-      officialExplanation: `${UI_ICONS.book} Explicação Oficial`,
+      officialExplanation: `${UI_ICONS.book} Explicação Arquitetural Detalhada`,
       select1: "Escolha 1 opção",
       selectN: "Selecione {n} opções",
-      translating: "Traduzindo para Português..."
+      translating: "Traduzindo para Português...",
+      footerBrand: "<strong>PCA Architect Prep</strong> — Plataforma Independente de Treinamento",
+      footerDisclaimer: "<strong>Aviso Legal & Marcas Registradas:</strong> Google Cloud, GCP e Google Cloud Certified Professional Cloud Architect são marcas comerciais ou registradas da Google LLC. Este aplicativo é uma ferramenta preparatória independente desenvolvida para fins educacionais e de estudo. NÃO possui afiliação, patrocínio, autorização ou endosso oficial por parte da Google LLC. As inscrições para os exames oficiais devem ser realizadas nos canais credenciados pelo Google Cloud.",
+      footerLegalNotice: "Aviso Legal & Marcas",
+      footerTerms: "Termos de Uso",
+      footerPrivacy: "Política de Privacidade",
+      footerExamGuideLink: "Guia de Exame (Google Cloud) ↗",
+      footerCopyright: "&copy; 2026 PCA Architect Prep. Material preparatório independente.",
+      legalModalTitle: "Aviso Legal & Conformidade"
     },
     en: {
       appTitle: "GCP Cloud Architect",
-      appSubtitle: "Official Practice Exams & Simulator (PCA)",
+      appSubtitle: "Independent Practice Exams & Simulator (PCA)",
       modeSimuladoBadge: "PRACTICE MODE",
       modeExameBadge: "EXAM MODE (120 min)",
       heroTitle: "Preparation Practice Exams for GCP Professional Cloud Architect",
-      heroSubtitle: "Fully based on the 420 official practice questions and aligned with the official Google Cloud Exam Guide domain weights.",
+      heroSubtitle: "Bank of 420 commented practice questions, weighted and mapped to the Google Cloud Professional Cloud Architect blueprint.",
       badge7Quizzes: "7 Full Practice Exams",
       badge60Q: "60 Questions per Exam",
       badge420Q: "420 Questions Total",
-      badgeSecDist: "Official Domain Distribution",
-      badge120Min: "Official 120-min Timer",
+      badgeSecDist: "Exam Domain Distribution",
+      badge120Min: "120-min Timed Simulator",
       step1Title: "1. Select Exam Mode",
       modeStudyBadge: "Study Mode",
       modeStudyTitle: "Practice Mode (Training)",
       modeStudyDesc: "Ideal for daily study, active recall, and continuous learning.",
       modeStudyF1: `${UI_ICONS.save} <strong>Save progress:</strong> Pause and resume at any time.`,
       modeStudyF2: `${UI_ICONS.lightbulb} <strong>Hints enabled:</strong> Get architectural clues when in doubt.`,
-      modeStudyF3: `${UI_ICONS.book} <strong>Immediate feedback:</strong> Reveal official answers and explanations.`,
+      modeStudyF3: `${UI_ICONS.book} <strong>Immediate feedback:</strong> Reveal answer key and detailed explanations.`,
       modeStudyF4: `${UI_ICONS.clock} <strong>No time pressure:</strong> Optional forward stopwatch.`,
       modeExamBadge: "Real Exam",
       modeExamTitle: "Exam Mode (Certification Simulation)",
-      modeExamDesc: "Realistic experience mirroring the official Google Cloud certification exam.",
+      modeExamDesc: "Realistic simulation based on the Google Cloud certification exam format.",
       modeExamF1: `${UI_ICONS.hourglass} <strong>120-Minute Timer:</strong> Strict countdown clock.`,
       modeExamF2: `${UI_ICONS.ban} <strong>No saving:</strong> Cannot pause and resume later.`,
       modeExamF3: `${UI_ICONS.lock} <strong>No hints:</strong> Answers and explanations only shown upon completion.`,
-      modeExamF4: `${UI_ICONS.chart} <strong>Official passing threshold:</strong> 70% passing grade.`,
+      modeExamF4: `${UI_ICONS.chart} <strong>Exam Benchmark:</strong> 70% recommended target score.`,
       step2Title: "2. Select Quiz (60 Questions)",
       btnContinue: `${UI_ICONS.play} Resume`,
       btnRestart: "Restart",
@@ -149,7 +157,7 @@
       hintBtn: `${UI_ICONS.lightbulb} View Architectural Hint`,
       hintTitle: "Architectural Hint:",
       explanationTitle: `${UI_ICONS.book} Answer & Explanation`,
-      officialAnswer: "Official Answer:",
+      officialAnswer: "Answer Key & Rationale:",
       btnPrev: "← Previous",
       btnNext: "Next →",
       btnReveal: "Show Answer",
@@ -168,8 +176,8 @@
       statCorrect: "Correct",
       statWrong: "Incorrect",
       statUnanswered: "Unanswered",
-      sectionBreakdownTitle: `${UI_ICONS.chart} Performance by Official Exam Guide Section`,
-      sectionBreakdownDesc: "Weighted distribution mapped to the Google Cloud Professional Cloud Architect blueprint.",
+      sectionBreakdownTitle: `${UI_ICONS.chart} Performance by Exam Blueprint Domain`,
+      sectionBreakdownDesc: "Weighted distribution mapped to the 6 domains of the Google Cloud Professional Cloud Architect blueprint.",
       btnRetake: `${UI_ICONS.refresh} Retake This Quiz`,
       btnSelectOther: `${UI_ICONS.document} Choose Another Quiz`,
       reviewTitle: "Detailed Question Review",
@@ -181,10 +189,18 @@
       correctAnswer: "Correct Answer:",
       statusCorrect: `${UI_ICONS.checkCircle} (Correct)`,
       statusWrong: `${UI_ICONS.xCircle} (Incorrect)`,
-      officialExplanation: `${UI_ICONS.book} Official Explanation`,
+      officialExplanation: `${UI_ICONS.book} Detailed Architectural Rationale`,
       select1: "Choose 1 option",
       selectN: "Select {n} options",
-      translating: "Translating to Portuguese..."
+      translating: "Translating to Portuguese...",
+      footerBrand: "<strong>PCA Architect Prep</strong> — Independent Practice & Training Platform",
+      footerDisclaimer: "<strong>Legal Disclaimer & Trademarks:</strong> Google Cloud, GCP, and Google Cloud Certified Professional Cloud Architect are trademarks or registered trademarks of Google LLC. This platform is an independent preparatory study tool designed solely for educational purposes. It is NOT affiliated with, sponsored by, authorized by, or endorsed by Google LLC. Official certification exam registrations must be made directly through Google Cloud testing partners.",
+      footerLegalNotice: "Legal Notice & Trademarks",
+      footerTerms: "Terms of Service",
+      footerPrivacy: "Privacy Policy",
+      footerExamGuideLink: "Exam Guide (Google Cloud) ↗",
+      footerCopyright: "&copy; 2026 PCA Architect Prep. Independent preparatory study platform.",
+      legalModalTitle: "Legal Notice & Compliance"
     }
   };
 
@@ -902,14 +918,123 @@
     applyUILanguage();
   }
 
+  // Legal & Compliance Content
+  const LEGAL_CONTENT = {
+    pt: {
+      disclaimer: `
+        <h4>1. Isenção de Afiliação e Parceria</h4>
+        <p>Este aplicativo (<strong>PCA Architect Prep</strong>) é uma plataforma independente de simulados desenvolvida para a capacitação de profissionais que se preparam para a certificação <strong>Google Cloud Certified Professional Cloud Architect</strong>.</p>
+        <p><strong>NÃO possuímos qualquer vínculo institucional, representação, afiliação, patrocínio ou endosso por parte da Google LLC ou de qualquer uma de suas afiliadas.</strong></p>
+        <h4>2. Marcas Registradas & Uso Nominativo</h4>
+        <p>Os termos "Google", "Google Cloud", "GCP", "Google Cloud Platform" e "Professional Cloud Architect", bem como respectivos nomes de serviços e domínios associados, são marcas registradas de titularidade exclusiva da <strong>Google LLC</strong>.</p>
+        <p>A citação a estas marcas e seus planos de estudo nesta aplicação dá-se estritamente sob a doutrina de <em>uso nominativo e descritivo (fair use)</em>, visando identificar de forma clara e precisa a certificação abordada nas questões de treino.</p>
+        <h4>3. Exames e Inscrições</h4>
+        <p>A realização do exame oficial da certificação exige agendamento nos canais autorizados da Google Cloud (Kryterion / Webassessor). Esta aplicação não comercializa nem substitui vouchers oficiais do exame.</p>
+      `,
+      terms: `
+        <h4>1. Aceitação dos Termos</h4>
+        <p>Ao utilizar este aplicativo de preparação para o exame PCA, você declara que concorda e adere integralmente a estes Termos de Uso.</p>
+        <h4>2. Finalidade Educacional</h4>
+        <p>Todo o conteúdo de questões, gabaritos, dicas arquiteturais e justificativas é disponibilizado exclusivamente para fins de autoestudo e aprendizado contínuo. <strong>Não oferecemos garantia de aprovação no exame oficial</strong>, cabendo ao estudante sua dedicação aos estudos teóricos e práticos.</p>
+        <h4>3. Propriedade Intelectual</h4>
+        <p>O software, sua interface, organização didática e explicações técnicas originais são protegidos pelas leis de propriedade intelectual. É proibida a extração automatizada, cópia em massa ou revenda não autorizada dos materiais.</p>
+      `,
+      privacy: `
+        <h4>1. Conformidade com LGPD e Políticas Google</h4>
+        <p>Respeitamos sua privacidade e tratamos dados pessoais em estrita conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018) e com as Políticas de Dados do Usuário dos Serviços de API do Google.</p>
+        <h4>2. Dados Coletados via Google Sign-In</h4>
+        <p>Ao autenticar-se com sua Conta Google, os únicos dados acessados são os estritamente necessários para a operação do simulador:</p>
+        <ul>
+          <li><strong>Nome e E-mail:</strong> Para vincular sua conta e exibir sua identificação.</li>
+          <li><strong>Foto de Perfil:</strong> Para exibição no painel do usuário.</li>
+          <li><strong>ID Google (sub):</strong> Para isolar com segurança seu progresso e notas no banco Firestore.</li>
+        </ul>
+        <h4>3. Não Compartilhamento</h4>
+        <p>Seus dados <strong>não são vendidos, alugados ou compartilhados</strong> com empresas parceiras de publicidade ou terceiros.</p>
+      `
+    },
+    en: {
+      disclaimer: `
+        <h4>1. Non-Affiliation Disclaimer</h4>
+        <p>This application (<strong>PCA Architect Prep</strong>) is an independent practice exam platform built to help professionals prepare for the <strong>Google Cloud Certified Professional Cloud Architect</strong> examination.</p>
+        <p><strong>We have NO institutional partnership, affiliation, sponsorship, authorization, or endorsement by Google LLC or any of its subsidiaries.</strong></p>
+        <h4>2. Trademarks & Nominative Fair Use</h4>
+        <p>"Google", "Google Cloud", "GCP", "Google Cloud Platform", and "Professional Cloud Architect" are trademarks or registered trademarks of <strong>Google LLC</strong>.</p>
+        <p>References to these trademarks and examination domains are made strictly under <em>nominative fair use</em> to identify the certification program and technical subject matter.</p>
+        <h4>3. Official Registrations</h4>
+        <p>Sitting for the official exam requires scheduling directly through Google Cloud authorized test delivery providers (Kryterion / Webassessor). This app does not sell official exam vouchers.</p>
+      `,
+      terms: `
+        <h4>1. Acceptance of Terms</h4>
+        <p>By using this study simulator, you acknowledge and agree to these Terms of Service.</p>
+        <h4>2. Educational Purpose</h4>
+        <p>All materials are provided solely for educational and self-assessment purposes. <strong>We provide no guarantee of passing the official examination</strong>, as performance depends on individual study and real-world architecture experience.</p>
+        <h4>3. Intellectual Property</h4>
+        <p>Application source code, user interface, explanations, and custom content are protected by copyright laws. Scraping, unauthorized redistribution, or reselling is prohibited.</p>
+      `,
+      privacy: `
+        <h4>1. Data Protection & Google API Policies</h4>
+        <p>We take privacy seriously and operate in full compliance with data privacy regulations (GDPR/LGPD) and Google API Services User Data Policies.</p>
+        <h4>2. Data Collected via Google Identity</h4>
+        <p>When signing in with your Google Account, we only access minimal profile attributes required to provide the service:</p>
+        <ul>
+          <li><strong>Name and Email:</strong> For account identity and communications.</li>
+          <li><strong>Profile Picture:</strong> Displayed on the user badge.</li>
+          <li><strong>Unique Google ID (sub):</strong> To isolate your quiz progress securely in Firestore.</li>
+        </ul>
+        <h4>3. No Data Selling</h4>
+        <p>We <strong>do not sell, rent, or share</strong> your personal data with third-party advertising networks.</p>
+      `
+    }
+  };
+
+  let activeLegalTab = 'disclaimer';
+
+  function openLegalModal(tab = 'disclaimer') {
+    activeLegalTab = tab;
+    const modal = document.getElementById('modal-legal');
+    if (!modal) return;
+
+    document.querySelectorAll('.legal-tab-btn').forEach(btn => {
+      if (btn.getAttribute('data-legal-tab') === tab) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    renderLegalModalBody();
+    modal.classList.add('open');
+  }
+
+  function closeLegalModal() {
+    const modal = document.getElementById('modal-legal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  function renderLegalModalBody() {
+    const body = document.getElementById('modal-legal-body');
+    const lang = (uiLanguage === 'pt' || uiLanguage === 'en') ? uiLanguage : 'pt';
+    const content = LEGAL_CONTENT[lang] || LEGAL_CONTENT.pt;
+    if (body) {
+      body.innerHTML = content[activeLegalTab] || content.disclaimer;
+    }
+  }
+
   function applyUILanguage() {
     const t = I18N[uiLanguage] || I18N.pt;
     document.documentElement.lang = uiLanguage === 'pt' ? 'pt-BR' : 'en';
 
+    // Header Subtitle
+    const headerSub = document.getElementById('app-header-subtitle');
+    if (headerSub) {
+      headerSub.textContent = t.appSubtitle;
+    }
+
     // Login Screen Strings
     const loginSubtitle = document.getElementById('login-subtitle');
     if (loginSubtitle) {
-      loginSubtitle.textContent = uiLanguage === 'pt' ? 'Simulador Oficial de Exames & Treinamento Contínuo' : 'Official Practice Exams & Exam Simulator';
+      loginSubtitle.textContent = t.loginSubtitle;
     }
     const featCloudTitle = document.getElementById('feature-cloud-title');
     if (featCloudTitle) {
@@ -923,7 +1048,7 @@
     }
     const featHistTitle = document.getElementById('feature-history-title');
     if (featHistTitle) {
-      featHistTitle.textContent = uiLanguage === 'pt' ? 'Desempenho por Seções Oficiais' : 'Official Domain Performance';
+      featHistTitle.textContent = uiLanguage === 'pt' ? 'Desempenho por Domínio do Exame' : 'Exam Domain Performance';
     }
     const featHistDesc = document.getElementById('feature-history-desc');
     if (featHistDesc) {
@@ -1005,6 +1130,27 @@
       modeHeaderBadge.textContent = t.modeSimuladoBadge;
       btnSaveExit.textContent = t.btnSaveExit;
     }
+
+    // Footer Strings
+    const fBrand = document.querySelector('.footer-brand');
+    if (fBrand) fBrand.innerHTML = t.footerBrand;
+    const fDisc = document.getElementById('footer-disclaimer-text');
+    if (fDisc) fDisc.innerHTML = t.footerDisclaimer;
+    const fNoticeBtn = document.querySelector('[data-open-legal="disclaimer"]');
+    if (fNoticeBtn) fNoticeBtn.textContent = t.footerLegalNotice;
+    const fTermsBtn = document.querySelector('[data-open-legal="terms"]');
+    if (fTermsBtn) fTermsBtn.textContent = t.footerTerms;
+    const fPrivacyBtn = document.querySelector('[data-open-legal="privacy"]');
+    if (fPrivacyBtn) fPrivacyBtn.textContent = t.footerPrivacy;
+    const fGuideLink = document.querySelector('.footer-external-link');
+    if (fGuideLink) fGuideLink.textContent = t.footerExamGuideLink;
+    const fCopy = document.querySelector('.footer-copy');
+    if (fCopy) fCopy.innerHTML = t.footerCopyright;
+
+    // Legal Modal Title & Re-render if open
+    const modalLegalTitle = document.getElementById('modal-legal-title');
+    if (modalLegalTitle) modalLegalTitle.textContent = t.legalModalTitle;
+    renderLegalModalBody();
 
     if (activeQuiz) {
       renderCurrentQuestion();
@@ -1132,6 +1278,43 @@
       modalConfirm.classList.remove('open');
       if (modalConfirmCallback) modalConfirmCallback();
       modalConfirmCallback = null;
+    });
+
+    // Legal Modal Events
+    document.querySelectorAll('[data-open-legal]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tab = btn.getAttribute('data-open-legal') || 'disclaimer';
+        openLegalModal(tab);
+      });
+    });
+
+    document.querySelectorAll('.legal-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.getAttribute('data-legal-tab') || 'disclaimer';
+        openLegalModal(tab);
+      });
+    });
+
+    const btnCloseLegal = document.getElementById('modal-legal-btn-close');
+    if (btnCloseLegal) btnCloseLegal.addEventListener('click', closeLegalModal);
+
+    const btnOkLegal = document.getElementById('modal-legal-btn-ok');
+    if (btnOkLegal) btnOkLegal.addEventListener('click', closeLegalModal);
+
+    const modalLegal = document.getElementById('modal-legal');
+    if (modalLegal) {
+      modalLegal.addEventListener('click', (e) => {
+        if (e.target === modalLegal) closeLegalModal();
+      });
+    }
+
+    // Keyboard ESC to close modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeLegalModal();
+        if (modalConfirm) modalConfirm.classList.remove('open');
+      }
     });
   }
 
