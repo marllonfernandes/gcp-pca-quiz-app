@@ -4,9 +4,9 @@
   "description": "Google Cloud Professional Cloud Architect (PCA) Practice & Exam Simulator on Cloud Run with Firestore",
   "scripts": {
     "start": "cd backend && npm start",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev:backend": "cd backend && node --env-file=../.env --watch server.js",
+    "dev:frontend": "cd frontend && npm run build -- --watch",
+    "dev": "npm run build && (npm run dev:backend & npm run dev:frontend)",
     "build": "cd frontend && npm run build",
     "seed": "cd backend && npm run seed",
     "install:all": "cd backend && npm install && cd ../frontend && npm install"
