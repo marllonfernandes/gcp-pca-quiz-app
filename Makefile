@@ -112,7 +112,7 @@ open:
 	fi
 
 install:
-	npm install
+	npm run install:all
 
 dev:
 	npm run dev
