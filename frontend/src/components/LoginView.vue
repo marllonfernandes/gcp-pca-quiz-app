@@ -77,8 +77,8 @@
           </button>
         </div>
 
-        <!-- Dev Mode Fallback / Quick Access -->
-        <div class="dev-login-section">
+        <!-- Dev Mode Fallback / Quick Access (Only Visible in Local Dev) -->
+        <div v-if="isDevMode" class="dev-login-section">
           <div class="divider">
             <span>{{ quizStore.lang === 'pt' ? 'ou para testes' : 'or for testing' }}</span>
           </div>
@@ -116,6 +116,7 @@ const quizStore = useQuizStore();
 
 const isGoogleReady = ref(false);
 const isGoogleLoading = ref(true);
+const isDevMode = ref(import.meta.env.DEV);
 const authError = ref('');
 let pollInterval = null;
 
