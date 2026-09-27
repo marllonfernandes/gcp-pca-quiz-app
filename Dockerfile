@@ -7,7 +7,6 @@ COPY frontend/package*.json ./
 RUN npm ci
 
 COPY frontend/ ./
-COPY public/ /app/public/
 RUN npm run build
 
 # Stage 2: Production runtime for Express server
@@ -31,7 +30,7 @@ COPY backend/server.js ./
 COPY backend/data/ ./data/
 
 # Copy compiled frontend from Stage 1 into public/
-COPY --from=frontend-builder /app/public ./public/
+COPY --from=frontend-builder /app/backend/public ./public/
 
 # Security: Run as non-root unprivileged user
 USER node
