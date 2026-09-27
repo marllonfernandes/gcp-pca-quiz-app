@@ -280,8 +280,11 @@ export const useQuizStore = defineStore('quiz', {
 
     // Start Simulation
     async startQuiz(quizId, resumeSaved = false) {
-      const quiz = this.quizDatabase?.quizzes?.find(q => q.id === quizId);
-      if (!quiz) return;
+      let quiz = this.quizDatabase?.quizzes?.find(q => String(q.id) === String(quizId));
+      if (!quiz) {
+        // Fallback se o catálogo não foi carregado corretamente na tela
+        quiz = { id: parseInt(quizId, 10), title: `Simulado ${quizId}`, questions: [] };
+      }
 
       if (!quiz.questions || quiz.questions.length === 0) {
         try {
