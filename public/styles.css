@@ -443,8 +443,49 @@ body {
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
 }
 
-.gcp-cloud-logo-login {
+.pca-brand-logo {
+  transition: transform 0.2s ease;
+}
+
+.gcp-cloud-logo-login,
+.pca-brand-logo-login {
   animation: float 4s ease-in-out infinite;
+}
+
+.login-compliance-notice {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.login-compliance-notice p {
+  margin-bottom: 0.35rem;
+}
+
+.login-disclaimer-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.btn-legal-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0;
+  display: inline;
+}
+
+.btn-legal-link:hover {
+  color: var(--primary-hover);
 }
 
 @keyframes float {
@@ -1851,15 +1892,190 @@ body {
   to { transform: scaleX(0); }
 }
 
-/* Footer */
+/* Footer & Legal */
 .app-footer {
   border-top: 1px solid var(--border-color);
   background: var(--bg-card);
-  padding: 1.25rem 0;
-  margin-top: 3rem;
+  padding: 2rem 1.5rem;
+  margin-top: 3.5rem;
   font-size: 0.85rem;
   color: var(--text-secondary);
+}
+
+.footer-container {
+  max-width: 1000px;
+  margin: 0 auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.footer-brand {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.footer-disclaimer {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 840px;
+  background: var(--bg-subtle);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.footer-link-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, color 0.15s;
+}
+
+.footer-link-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.footer-external-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.footer-external-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.footer-sep {
+  color: var(--border-color);
+  font-size: 0.8rem;
+}
+
+.footer-copy {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Modal Legal Card & Tabs */
+.modal-legal-card {
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+.modal-legal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-close-icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.modal-close-icon-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+}
+
+.modal-legal-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.legal-tab-btn {
+  background: none;
+  border: none;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.legal-tab-btn:hover {
+  color: var(--primary);
+}
+
+.legal-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.modal-legal-body {
+  overflow-y: auto;
+  max-height: 50vh;
+  padding-right: 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+
+.modal-legal-body h4 {
+  font-size: 0.98rem;
+  margin: 1rem 0 0.4rem;
+  color: var(--text-primary);
+}
+
+.modal-legal-body h4:first-child {
+  margin-top: 0;
+}
+
+.modal-legal-body p {
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.modal-legal-body ul {
+  margin-left: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.modal-legal-body li {
+  margin-bottom: 0.35rem;
 }
 
 /* ==========================================================================

@@ -78,9 +78,9 @@ app/
 ├── scripts/                # Scripts de infraestrutura e migração
 │   └── seed-firestore.js   # Script de carga inicial para o Cloud Firestore
 └── public/                 # Frontend Web estático
-    ├── index.html          # Interface responsiva bilíngue com logo oficial GCP
+    ├── index.html          # Interface responsiva bilíngue com conformidade legal de marca
     ├── styles.css          # Estilos CSS com tema claro/escuro e mobile-first
-    └── app.js              # Controlador SPA com suporte a Firestore API
+    └── app.js              # Controlador SPA com modais de compliance e Firestore API
 ```
 
 ---
@@ -169,3 +169,20 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
   --role="roles/datastore.user"
 ```
+
+---
+
+## ⚖️ Conformidade Legal, Marcas Registradas & Comercialização
+
+Para viabilizar a comercialização e distribuição pública em total conformidade com as diretrizes de terceiros e a legislação vigente:
+
+1. **Uso Nominativo de Marcas (Google Brand Permissions)**:
+   - Os termos *Google Cloud*, *GCP* e *Professional Cloud Architect* são marcas registradas da Google LLC.
+   - O aplicativo posiciona-se expressamente como **material preparatório independente**, sem alegar ser produto "oficial" ou credenciado.
+   - A identidade visual utiliza um logotipo proprietário (`PCA Architect Prep`) e dispõe de aviso legal e isenção de responsabilidade em destaque na tela de login, rodapé e modais.
+
+2. **Privacidade e Proteção de Dados (LGPD & Google Identity)**:
+   - O aplicativo coleta exclusivamente os dados fornecidos pelo usuário via Google Sign-In (Nome, E-mail, Foto e UID) para o propósito exclusivo de autenticação e isolamento do progresso dos simulados no Cloud Firestore.
+   - Nenhum dado pessoal é comercializado ou compartilhado com terceiros.
+   - Modais acessíveis de **Aviso Legal**, **Termos de Uso** e **Política de Privacidade** estão integrados nativamente na interface em português e inglês.
+
