@@ -330,14 +330,195 @@ function canBypassCache(req) {
   return Boolean(adminSecret && req.headers['x-admin-refresh-key'] === adminSecret && req.query.refresh === 'true');
 }
 
-// GET /api/quizzes - List quiz catalog summary & exam sections from Firestore (Protected)
+// ============================================================================
+// Multi-Exam Google Cloud Catalog
+// ============================================================================
+const EXAMS_CATALOG = [
+  {
+    id: 'gcp-pca',
+    code: 'PCA',
+    name: 'Google Cloud Professional Cloud Architect',
+    name_pt: 'Google Cloud Professional Cloud Architect',
+    shortName: 'Cloud Architect',
+    level: 'Professional',
+    badgeColor: '#1a73e8',
+    status: 'active',
+    totalQuizzes: 7,
+    totalQuestions: 420,
+    passingScore: '70%',
+    durationMinutes: 120,
+    examFeeUsd: 200,
+    description: 'Planeje, desenvolva e gerencie soluções de arquitetura robustas, seguras, escaláveis e altamente disponíveis no Google Cloud.',
+    description_en: 'Design, develop, and manage robust, secure, scalable, and highly available architectures on Google Cloud.',
+    domainsCount: 6,
+    sections: {
+      "1": { name: "Designing and Planning a Cloud Solution Architecture", name_pt: "Projetando e Planejando a Arquitetura em Nuvem", weight: "25%", color: "#1a73e8" },
+      "2": { name: "Managing and Provisioning Cloud Solution Infrastructure", name_pt: "Gerenciamento e Provisionamento de Infraestrutura", weight: "17.5%", color: "#34a853" },
+      "3": { name: "Designing for Security and Compliance", name_pt: "Segurança e Conformidade", weight: "17.5%", color: "#ea4335" },
+      "4": { name: "Analyzing and Optimizing Technical and Business Processes", name_pt: "Otimização de Processos Técnicos e de Negócio", weight: "15%", color: "#fbbc05" },
+      "5": { name: "Managing Implementation", name_pt: "Gerenciamento de Implementação", weight: "12.5%", color: "#9334e8" },
+      "6": { name: "Ensuring Solution and Operations Excellence", name_pt: "Excelência em Operações e Confiabilidade", weight: "12.5%", color: "#00acc1" }
+    }
+  },
+  {
+    id: 'gcp-ace',
+    code: 'ACE',
+    name: 'Google Cloud Associate Cloud Engineer',
+    name_pt: 'Google Cloud Associate Cloud Engineer',
+    shortName: 'Associate Cloud Engineer',
+    level: 'Associate',
+    badgeColor: '#34a853',
+    status: 'coming_soon',
+    totalQuizzes: 5,
+    totalQuestions: 300,
+    passingScore: '70%',
+    durationMinutes: 120,
+    examFeeUsd: 125,
+    description: 'Implemente aplicativos, monitore operações e gerencie soluções corporativas fundamentais na nuvem Google.',
+    description_en: 'Deploy applications, monitor operations, and manage enterprise solutions on Google Cloud.',
+    domainsCount: 5,
+    sections: {
+      "1": { name: "Setting up a cloud solution environment", name_pt: "Configuração do ambiente em nuvem", weight: "18%", color: "#34a853" },
+      "2": { name: "Planning and configuring a cloud solution", name_pt: "Planejamento e configuração de recursos", weight: "18%", color: "#1a73e8" },
+      "3": { name: "Deploying and implementing a cloud solution", name_pt: "Implantação e implementação em nuvem", weight: "25%", color: "#ea4335" },
+      "4": { name: "Ensuring successful operation of a cloud solution", name_pt: "Garantia de operação bem-sucedida", weight: "20%", color: "#fbbc05" },
+      "5": { name: "Configuring access and security", name_pt: "Configuração de acessos e segurança", weight: "19%", color: "#9334e8" }
+    }
+  },
+  {
+    id: 'gcp-pde',
+    code: 'PDE',
+    name: 'Google Cloud Professional Data Engineer',
+    name_pt: 'Google Cloud Professional Data Engineer',
+    shortName: 'Data Engineer',
+    level: 'Professional',
+    badgeColor: '#ea4335',
+    status: 'coming_soon',
+    totalQuizzes: 5,
+    totalQuestions: 300,
+    passingScore: '70%',
+    durationMinutes: 120,
+    examFeeUsd: 200,
+    description: 'Projete sistemas de dados escaláveis, pipelines com BigQuery, Dataflow, Dataproc, Pub/Sub e IA Generativa.',
+    description_en: 'Design scalable data processing systems, ETL pipelines with BigQuery, Dataflow, and ML.',
+    domainsCount: 4,
+    sections: {
+      "1": { name: "Designing data processing systems", name_pt: "Design de sistemas de processamento de dados", weight: "22%", color: "#ea4335" },
+      "2": { name: "Ingesting and processing data", name_pt: "Ingestão e processamento de dados (Streaming/Batch)", weight: "25%", color: "#1a73e8" },
+      "3": { name: "Storing data and managing pipelines", name_pt: "Armazenamento e governança de pipelines", weight: "28%", color: "#34a853" },
+      "4": { name: "Security, compliance, and scalability", name_pt: "Segurança, conformidade e escalabilidade", weight: "25%", color: "#fbbc05" }
+    }
+  },
+  {
+    id: 'gcp-pcse',
+    code: 'PCSE',
+    name: 'Google Cloud Professional Cloud Security Engineer',
+    name_pt: 'Google Cloud Professional Cloud Security Engineer',
+    shortName: 'Security Engineer',
+    level: 'Professional',
+    badgeColor: '#fbbc05',
+    status: 'coming_soon',
+    totalQuizzes: 4,
+    totalQuestions: 240,
+    passingScore: '70%',
+    durationMinutes: 120,
+    examFeeUsd: 200,
+    description: 'Implemente segurança de ponta a ponta, governança de acessos (IAM), CMEK/KMS e VPC Service Controls.',
+    description_en: 'Implement end-to-end security, identity governance (IAM), encryption with CMEK, and VPC Service Controls.',
+    domainsCount: 5,
+    sections: {
+      "1": { name: "Configuring access within cloud environments", name_pt: "Controle de acesso e identidades (IAM / Workload)", weight: "21%", color: "#fbbc05" },
+      "2": { name: "Managing network security", name_pt: "Segurança de redes (Cloud Armor, Firewalls, VPC-SC)", weight: "21%", color: "#1a73e8" },
+      "3": { name: "Ensuring data protection", name_pt: "Proteção de dados (CMEK, Cloud KMS, DLP, Secrets)", weight: "20%", color: "#ea4335" },
+      "4": { name: "Managing operations within cloud environments", name_pt: "Monitoramento de segurança, Logging e SIEM", weight: "19%", color: "#34a853" },
+      "5": { name: "Ensuring compliance and posture", name_pt: "Conformidade regulatória e postura (SCC)", weight: "19%", color: "#9334e8" }
+    }
+  },
+  {
+    id: 'gcp-devops',
+    code: 'DevOps',
+    name: 'Google Cloud Professional Cloud DevOps Engineer',
+    name_pt: 'Google Cloud Professional Cloud DevOps Engineer',
+    shortName: 'DevOps & SRE',
+    level: 'Professional',
+    badgeColor: '#9334e8',
+    status: 'coming_soon',
+    totalQuizzes: 4,
+    totalQuestions: 240,
+    passingScore: '70%',
+    durationMinutes: 120,
+    examFeeUsd: 200,
+    description: 'Engenharia de Confiabilidade de Sites (SRE), esteiras de CI/CD automatizadas e observabilidade com SLOs.',
+    description_en: 'Site Reliability Engineering (SRE), automated CI/CD pipelines, and observability with SLIs/SLOs.',
+    domainsCount: 5,
+    sections: {
+      "1": { name: "Applying site reliability engineering (SRE) principles", name_pt: "Princípios de SRE e confiabilidade de serviços", weight: "22%", color: "#9334e8" },
+      "2": { name: "Building and implementing CI/CD pipelines", name_pt: "Construção de pipelines de CI/CD e entrega contínua", weight: "24%", color: "#1a73e8" },
+      "3": { name: "Implementing service monitoring strategies", name_pt: "Monitoramento de serviços, métricas e SLIs/SLOs", weight: "20%", color: "#34a853" },
+      "4": { name: "Managing service availability and incidents", name_pt: "Gestão de incidentes e post-mortem", weight: "18%", color: "#ea4335" },
+      "5": { name: "Optimizing service performance", name_pt: "Otimização de desempenho e governança de custos", weight: "16%", color: "#00acc1" }
+    }
+  }
+];
+
+// GET /api/exams - List all available GCP exams in catalog
+app.get('/api/exams', (req, res) => {
+  res.json({
+    success: true,
+    total: EXAMS_CATALOG.length,
+    activeCount: EXAMS_CATALOG.filter(e => e.status === 'active').length,
+    exams: EXAMS_CATALOG
+  });
+});
+
+// GET /api/exams/:examId - Get single exam details
+app.get('/api/exams/:examId', (req, res) => {
+  const exam = EXAMS_CATALOG.find(e => e.id === req.params.examId);
+  if (!exam) {
+    return res.status(404).json({ success: false, message: 'Exame não encontrado no catálogo.' });
+  }
+  res.json({ success: true, exam });
+});
+
+// GET /api/quizzes - List quiz catalog summary & exam sections (Protected & Multi-Exam aware)
 app.get('/api/quizzes', requireAuth, async (req, res) => {
+  const examId = String(req.query.examId || 'gcp-pca').toLowerCase();
   const forceRefresh = canBypassCache(req);
   const now = Date.now();
 
-  // Return from in-memory cache if fresh
+  // If request is for a coming_soon exam, return its preview structure gracefully
+  if (examId !== 'gcp-pca') {
+    const targetExam = EXAMS_CATALOG.find(e => e.id === examId);
+    if (!targetExam) {
+      return res.status(404).json({ success: false, message: `Exame "${examId}" não encontrado.` });
+    }
+
+    const previewQuizzes = Array.from({ length: targetExam.totalQuizzes }, (_, i) => ({
+      id: i + 1,
+      title: `Simulado ${i + 1} (${targetExam.code})`,
+      description: `Simulado preparatório de 60 questões focado no exame ${targetExam.shortName}.`,
+      questionCount: 60,
+      comingSoon: targetExam.status === 'coming_soon',
+      sectionDistribution: {}
+    }));
+
+    return res.json({
+      success: true,
+      source: 'catalog-preview',
+      examId: targetExam.id,
+      examTitle: targetExam.name,
+      status: targetExam.status,
+      version: '1.0',
+      totalQuizzes: targetExam.totalQuizzes,
+      totalQuestions: targetExam.totalQuestions,
+      sections: targetExam.sections,
+      quizzes: previewQuizzes
+    });
+  }
+
+  // Active GCP-PCA: Return from in-memory cache if fresh
   if (!forceRefresh && cachedExamInfo && (now - cachedExamInfoTime < CACHE_TTL_MS)) {
-    return res.json({ success: true, source: 'firestore-cache', ...cachedExamInfo });
+    return res.json({ success: true, source: 'firestore-cache', examId: 'gcp-pca', ...cachedExamInfo });
   }
 
   if (firestore) {
@@ -355,7 +536,7 @@ app.get('/api/quizzes', requireAuth, async (req, res) => {
           quizzes: data.quizzesSummary || []
         };
         cachedExamInfoTime = now;
-        return res.json({ success: true, source: 'firestore', ...cachedExamInfo });
+        return res.json({ success: true, source: 'firestore', examId: 'gcp-pca', ...cachedExamInfo });
       }
     } catch (err) {
       console.warn('[API /api/quizzes GET] Firestore error, trying fallback:', err.message);
@@ -376,6 +557,7 @@ app.get('/api/quizzes', requireAuth, async (req, res) => {
     return res.json({
       success: true,
       source: 'local-fallback',
+      examId: 'gcp-pca',
       examTitle: local.examTitle,
       version: local.version,
       totalQuizzes: local.totalQuizzes,
@@ -388,20 +570,32 @@ app.get('/api/quizzes', requireAuth, async (req, res) => {
   res.status(503).json({ success: false, message: 'Dados de simulados indisponíveis.' });
 });
 
-// GET /api/quizzes/:quizId - Fetch full quiz with questions from Firestore (Protected)
+// GET /api/quizzes/:quizId - Fetch full quiz with questions from Firestore (Protected & Multi-Exam aware)
 app.get('/api/quizzes/:quizId', requireAuth, async (req, res) => {
   const quizId = parseInt(req.params.quizId, 10);
+  const examId = String(req.query.examId || 'gcp-pca').toLowerCase();
+
   if (isNaN(quizId) || quizId < 1 || quizId > 50) {
     return res.status(400).json({ success: false, message: 'Invalid quizId' });
   }
 
+  if (examId !== 'gcp-pca') {
+    const targetExam = EXAMS_CATALOG.find(e => e.id === examId);
+    return res.status(404).json({
+      success: false,
+      comingSoon: true,
+      message: `Os simulados para ${targetExam ? targetExam.name : examId} estão em desenvolvimento e serão lançados em breve.`
+    });
+  }
+
   const forceRefresh = canBypassCache(req);
-  const cached = cachedQuizzes.get(quizId);
+  const cacheKey = `${examId}_${quizId}`;
+  const cached = cachedQuizzes.get(cacheKey) || cachedQuizzes.get(quizId);
   const now = Date.now();
 
   // Return from in-memory cache if fresh
   if (!forceRefresh && cached && (now - cached.time < CACHE_TTL_MS)) {
-    return res.json({ success: true, source: 'firestore-cache', quiz: cached.data });
+    return res.json({ success: true, source: 'firestore-cache', examId, quiz: cached.data });
   }
 
   if (firestore) {
@@ -410,8 +604,8 @@ app.get('/api/quizzes/:quizId', requireAuth, async (req, res) => {
       const docSnap = await docRef.get();
       if (docSnap.exists) {
         const data = docSnap.data();
-        cachedQuizzes.set(quizId, { data, time: now });
-        return res.json({ success: true, source: 'firestore', quiz: data });
+        cachedQuizzes.set(cacheKey, { data, time: now });
+        return res.json({ success: true, source: 'firestore', examId, quiz: data });
       }
     } catch (err) {
       console.warn(`[API /api/quizzes/${quizId} GET] Firestore error, trying fallback:`, err.message);
@@ -423,18 +617,20 @@ app.get('/api/quizzes/:quizId', requireAuth, async (req, res) => {
   if (local && local.quizzes) {
     const localQuiz = local.quizzes.find(q => q.id === quizId);
     if (localQuiz) {
-      return res.json({ success: true, source: 'local-fallback', quiz: localQuiz });
+      return res.json({ success: true, source: 'local-fallback', examId, quiz: localQuiz });
     }
   }
 
-  res.status(404).json({ success: false, message: `Simulado ${quizId} não encontrado.` });
+  res.status(404).json({ success: false, message: `Simulado ${quizId} do exame ${examId} não encontrado.` });
 });
 
-// GET /api/progress - List all saved simulation progress for current user
+// GET /api/progress - List all saved simulation progress for current user (Multi-Exam aware)
 app.get('/api/progress', requireAuth, async (req, res) => {
   if (!firestore) {
     return res.status(503).json({ success: false, fallback: true, message: 'Firestore client not initialized' });
   }
+
+  const requestedExamId = req.query.examId ? String(req.query.examId).toLowerCase() : null;
 
   try {
     const snapshot = await firestore
@@ -447,17 +643,28 @@ app.get('/api/progress', requireAuth, async (req, res) => {
     snapshot.forEach(doc => {
       const data = doc.data();
       if (data && data.quizId) {
-        progressMap[data.quizId] = {
+        const itemExamId = data.examId || 'gcp-pca';
+        if (requestedExamId && itemExamId !== requestedExamId) {
+          return;
+        }
+
+        const mapKey = requestedExamId ? data.quizId : `${itemExamId}_${data.quizId}`;
+        progressMap[mapKey] = {
           quizId: data.quizId,
+          examId: itemExamId,
           quizTitle: data.quizTitle || `Simulado ${data.quizId}`,
           currentQuestionIndex: data.currentQuestionIndex || 0,
           answeredCount: Object.keys(data.userAnswers || {}).length,
           savedAt: data.savedAt || null
         };
+        // Also map directly by quizId if this matches the active/requested exam for easy frontend lookup
+        if (requestedExamId && requestedExamId === itemExamId) {
+          progressMap[data.quizId] = progressMap[mapKey];
+        }
       }
     });
 
-    res.json({ success: true, progress: progressMap });
+    res.json({ success: true, examId: requestedExamId || 'all', progress: progressMap });
   } catch (error) {
     console.error(`[API /api/progress GET - User: ${req.user.userId}]`, error.message);
     res.status(500).json({
@@ -468,9 +675,11 @@ app.get('/api/progress', requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/progress/:quizId - Get single quiz progress for current user
+// GET /api/progress/:quizId - Get single quiz progress for current user (Multi-Exam aware)
 app.get('/api/progress/:quizId', requireAuth, async (req, res) => {
   const quizId = parseInt(req.params.quizId, 10);
+  const examId = String(req.query.examId || 'gcp-pca').toLowerCase();
+
   if (isNaN(quizId) || quizId < 1 || quizId > 50) {
     return res.status(400).json({ success: false, message: 'Invalid quizId' });
   }
@@ -480,19 +689,20 @@ app.get('/api/progress/:quizId', requireAuth, async (req, res) => {
   }
 
   try {
+    const docId = examId === 'gcp-pca' ? `quiz_${quizId}` : `${examId}_quiz_${quizId}`;
     const docRef = firestore
       .collection('usuarios')
       .doc(req.user.userId)
       .collection('simulados_progresso')
-      .doc(`quiz_${quizId}`);
+      .doc(docId);
 
     const docSnap = await docRef.get();
 
     if (!docSnap.exists) {
-      return res.json({ success: true, exists: false });
+      return res.json({ success: true, exists: false, examId });
     }
 
-    res.json({ success: true, exists: true, data: docSnap.data() });
+    res.json({ success: true, exists: true, examId, data: docSnap.data() });
   } catch (error) {
     console.error(`[API /api/progress/${quizId} GET - User: ${req.user.userId}]`, error.message);
     res.status(500).json({
@@ -503,9 +713,11 @@ app.get('/api/progress/:quizId', requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/progress/:quizId - Save simulation progress for current user
+// POST /api/progress/:quizId - Save simulation progress for current user (Multi-Exam aware)
 app.post('/api/progress/:quizId', requireAuth, async (req, res) => {
   const quizId = parseInt(req.params.quizId, 10);
+  const examId = String(req.body.examId || req.query.examId || 'gcp-pca').toLowerCase();
+
   if (isNaN(quizId) || quizId < 1 || quizId > 50) {
     return res.status(400).json({ success: false, message: 'Invalid quizId' });
   }
@@ -517,15 +729,17 @@ app.post('/api/progress/:quizId', requireAuth, async (req, res) => {
   }
 
   try {
+    const docId = examId === 'gcp-pca' ? `quiz_${quizId}` : `${examId}_quiz_${quizId}`;
     const docRef = firestore
       .collection('usuarios')
       .doc(req.user.userId)
       .collection('simulados_progresso')
-      .doc(`quiz_${quizId}`);
+      .doc(docId);
 
     const payload = {
       userId: req.user.userId,
       userEmail: req.user.email,
+      examId,
       quizId,
       quizTitle: quizTitle || `Simulado ${quizId}`,
       mode: 'simulado',
@@ -540,7 +754,7 @@ app.post('/api/progress/:quizId', requireAuth, async (req, res) => {
     };
 
     await docRef.set(payload, { merge: true });
-    res.json({ success: true, message: 'Progresso salvo com sucesso no Firestore', savedAt: payload.savedAt });
+    res.json({ success: true, message: 'Progresso salvo com sucesso no Firestore', examId, savedAt: payload.savedAt });
   } catch (error) {
     console.error(`[API /api/progress/${quizId} POST - User: ${req.user.userId}]`, error.message);
     res.status(500).json({
@@ -551,9 +765,11 @@ app.post('/api/progress/:quizId', requireAuth, async (req, res) => {
   }
 });
 
-// DELETE /api/progress/:quizId - Discard simulation progress for current user
+// DELETE /api/progress/:quizId - Discard simulation progress for current user (Multi-Exam aware)
 app.delete('/api/progress/:quizId', requireAuth, async (req, res) => {
   const quizId = parseInt(req.params.quizId, 10);
+  const examId = String(req.body.examId || req.query.examId || 'gcp-pca').toLowerCase();
+
   if (isNaN(quizId) || quizId < 1 || quizId > 50) {
     return res.status(400).json({ success: false, message: 'Invalid quizId' });
   }
@@ -563,14 +779,15 @@ app.delete('/api/progress/:quizId', requireAuth, async (req, res) => {
   }
 
   try {
+    const docId = examId === 'gcp-pca' ? `quiz_${quizId}` : `${examId}_quiz_${quizId}`;
     const docRef = firestore
       .collection('usuarios')
       .doc(req.user.userId)
       .collection('simulados_progresso')
-      .doc(`quiz_${quizId}`);
+      .doc(docId);
 
     await docRef.delete();
-    res.json({ success: true, message: `Progresso do simulado ${quizId} removido do Firestore` });
+    res.json({ success: true, message: `Progresso do simulado ${quizId} removido do Firestore`, examId });
   } catch (error) {
     console.error(`[API /api/progress/${quizId} DELETE - User: ${req.user.userId}]`, error.message);
     res.status(500).json({
@@ -581,9 +798,10 @@ app.delete('/api/progress/:quizId', requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/results - Store completed exam / simulado results for current user
+// POST /api/results - Store completed exam / simulado results for current user (Multi-Exam aware)
 app.post('/api/results', requireAuth, async (req, res) => {
   const {
+    examId,
     quizId,
     quizTitle,
     mode,
@@ -608,10 +826,12 @@ app.post('/api/results', requireAuth, async (req, res) => {
       .collection('exames_resultados')
       .doc();
 
+    const selectedExamId = String(examId || 'gcp-pca').toLowerCase();
     const payload = {
       userId: req.user.userId,
       userEmail: req.user.email,
       userName: req.user.name,
+      examId: selectedExamId,
       quizId: Number(quizId),
       quizTitle: String(quizTitle || `Simulado ${quizId}`),
       mode: mode === 'exame' ? 'exame' : 'simulado',
@@ -629,7 +849,7 @@ app.post('/api/results', requireAuth, async (req, res) => {
     };
 
     await docRef.set(payload);
-    res.json({ success: true, id: docRef.id, message: 'Resultado gravado com sucesso no Firestore' });
+    res.json({ success: true, id: docRef.id, examId: selectedExamId, message: 'Resultado gravado com sucesso no Firestore' });
   } catch (error) {
     console.error(`[API /api/results POST - User: ${req.user.userId}]`, error.message);
     res.status(500).json({
@@ -640,11 +860,13 @@ app.post('/api/results', requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/results - List recent exam results for current user
+// GET /api/results - List recent exam results for current user (Multi-Exam aware)
 app.get('/api/results', requireAuth, async (req, res) => {
   if (!firestore) {
     return res.status(503).json({ success: false, fallback: true, message: 'Firestore not available' });
   }
+
+  const requestedExamId = req.query.examId ? String(req.query.examId).toLowerCase() : null;
 
   try {
     const snapshot = await firestore
@@ -652,15 +874,19 @@ app.get('/api/results', requireAuth, async (req, res) => {
       .doc(req.user.userId)
       .collection('exames_resultados')
       .orderBy('completedAt', 'desc')
-      .limit(20)
+      .limit(50)
       .get();
 
     const results = [];
     snapshot.forEach(doc => {
-      results.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      const itemExamId = data.examId || 'gcp-pca';
+      if (!requestedExamId || requestedExamId === itemExamId) {
+        results.push({ id: doc.id, examId: itemExamId, ...data });
+      }
     });
 
-    res.json({ success: true, results });
+    res.json({ success: true, examId: requestedExamId || 'all', results });
   } catch (error) {
     console.error(`[API /api/results GET - User: ${req.user.userId}]`, error.message);
     res.status(500).json({
