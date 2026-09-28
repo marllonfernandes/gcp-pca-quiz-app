@@ -23,6 +23,8 @@ export const useQuizStore = defineStore('quiz', {
     activeQuiz: null,
     selectedMode: 'simulado', // 'simulado' | 'exame'
     currentQuestionIndex: 0,
+    savedProgressMap: {},
+
     userAnswers: {}, // { [questionId]: ['A'] }
     flaggedQuestions: {}, // { [questionId]: true }
     revealedExplanations: {}, // { [questionId]: true }
@@ -231,6 +233,7 @@ export const useQuizStore = defineStore('quiz', {
       localStorage.setItem('gcp_pca_auth_token', token);
       localStorage.setItem('gcp_pca_user_profile', JSON.stringify(user));
       this.currentScreen = 'dashboard';
+      this.fetchProgress(); // Load saved progress after login
     },
 
     logout(msg) {
@@ -239,6 +242,20 @@ export const useQuizStore = defineStore('quiz', {
       localStorage.removeItem('gcp_pca_auth_token');
       localStorage.removeItem('gcp_pca_user_profile');
       this.currentScreen = 'login';
+    },
+
+    async fetchProgress() {
+      try {
+        const res = await this.authFetch(`/api/progress?examId=${encodeURIComponent(this.activeExamId)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.progress) {
+            this.savedProgressMap = data.progress;
+          }
+        }
+      } catch (e) {
+        console.warn('[Store] Erro ao carregar progresso:', e.message);
+      }
     },
 
     // Multi-Exam Actions
@@ -273,6 +290,7 @@ export const useQuizStore = defineStore('quiz', {
       localStorage.setItem('gcp_active_exam', examId);
       this.isExamDrawerOpen = false;
       await this.loadQuizCatalog(examId);
+      await this.fetchProgress();
     },
 
     // Quiz Catalog
@@ -334,16 +352,47 @@ export const useQuizStore = defineStore('quiz', {
 
       // Resume saved state for Simulado
       if (resumeSaved && this.selectedMode === 'simulado') {
-        const key = `${this.activeExamId}_saved_simulado_${quizId}`;
-        const raw = localStorage.getItem(key) || (this.activeExamId === 'gcp-pca' ? localStorage.getItem(`gcp_pca_saved_simulado_${quizId}`) : null);
-        if (raw) {
-          try {
-            const parsed = JSON.parse(raw);
-            this.userAnswers = parsed.userAnswers || {};
-            this.flaggedQuestions = parsed.flaggedQuestions || {};
-            this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
-            this.timeElapsed = parsed.timeElapsed || 0;
-          } catch (e) {}
+        let parsed = null;
+
+        // 1. Tenta carregar do backend para ser a fonte mais atualizada
+        try {
+          const res = await this.authFetch(`/api/progress/${quizId}?examId=${encodeURIComponent(this.activeExamId)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.exists && data.data) {
+              parsed = data.data;
+            }
+          }
+        } catch (e) {
+          console.warn('[Store] Falha ao buscar progresso detalhado do servidor:', e.message);
+        }
+
+        // 2. Fallback para memória local (store) se o backend falhar
+        if (!parsed && this.savedProgressMap && this.savedProgressMap[quizId]) {
+          parsed = this.savedProgressMap[quizId];
+        }
+
+        // 3. Fallback para localStorage
+        if (!parsed) {
+          const key = `${this.activeExamId}_saved_simulado_${quizId}`;
+          const raw = localStorage.getItem(key) || (this.activeExamId === 'gcp-pca' ? localStorage.getItem(`gcp_pca_saved_simulado_${quizId}`) : null);
+          if (raw) {
+            try {
+              parsed = JSON.parse(raw);
+            } catch (e) {}
+          }
+        }
+
+        if (parsed) {
+          this.userAnswers = parsed.userAnswers || {};
+          this.flaggedQuestions = parsed.flaggedQuestions || {};
+          this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
+          this.timeElapsed = parsed.timeElapsed || 0;
+          
+          // Sincroniza o localStorage e map local para ficar atualizado
+          const key = `${this.activeExamId}_saved_simulado_${quizId}`;
+          localStorage.setItem(key, JSON.stringify(parsed));
+          this.savedProgressMap[quizId] = parsed;
         }
       }
 
@@ -476,6 +525,8 @@ export const useQuizStore = defineStore('quiz', {
       };
       const key = `${this.activeExamId}_saved_simulado_${this.activeQuiz.id}`;
       localStorage.setItem(key, JSON.stringify(saveState));
+      this.savedProgressMap[this.activeQuiz.id] = saveState;
+
 
       try {
         await this.authFetch(`/api/progress/${this.activeQuiz.id}?examId=${encodeURIComponent(this.activeExamId)}`, {
@@ -489,6 +540,7 @@ export const useQuizStore = defineStore('quiz', {
     async clearSavedProgress(quizId) {
       localStorage.removeItem(`${this.activeExamId}_saved_simulado_${quizId}`);
       localStorage.removeItem(`gcp_pca_saved_simulado_${quizId}`);
+      delete this.savedProgressMap[quizId];
       try {
         await this.authFetch(`/api/progress/${quizId}?examId=${encodeURIComponent(this.activeExamId)}`, { method: 'DELETE' });
       } catch (e) {}

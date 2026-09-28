@@ -280,6 +280,9 @@ function getSectionName(secId) {
 }
 
 function getSavedProgress(quizId) {
+  if (store.savedProgressMap && store.savedProgressMap[quizId]) {
+    return store.savedProgressMap[quizId];
+  }
   const key = `${store.activeExamId}_saved_simulado_${quizId}`;
   const raw = localStorage.getItem(key) || (store.activeExamId === 'gcp-pca' ? localStorage.getItem(`gcp_pca_saved_simulado_${quizId}`) : null);
   if (!raw) return null;
@@ -292,7 +295,9 @@ function getSavedProgress(quizId) {
 
 function getSavedAnsweredCount(quizId) {
   const saved = getSavedProgress(quizId);
-  return saved?.userAnswers ? Object.keys(saved.userAnswers).length : 0;
+  if (!saved) return 0;
+  if (saved.answeredCount !== undefined) return saved.answeredCount;
+  return saved.userAnswers ? Object.keys(saved.userAnswers).length : 0;
 }
 
 function discardSavedProgress(quizId) {
