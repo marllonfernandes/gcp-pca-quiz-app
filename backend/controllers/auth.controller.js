@@ -5,7 +5,7 @@ exports.getConfig = (req, res) => {
   res.json({ clientId: GOOGLE_CLIENT_ID });
 };
 
-exports.devLogin = async (req, res) => {
+exports.devLogin = async (req, res, next) => {
   if (IS_PRODUCTION) {
     return res.status(403).json({
       success: false,
@@ -39,7 +39,7 @@ exports.devLogin = async (req, res) => {
   res.json({ success: true, token: devToken, user: devUser });
 };
 
-exports.verify = async (req, res) => {
+exports.verify = async (req, res, next) => {
   const { token } = req.body;
   if (!token) {
     return res.status(400).json({ success: false, message: 'Token de autenticação não fornecido.' });

@@ -39,6 +39,7 @@ help:
 	@echo "  make logs            - Logs em tempo real do Cloud Run"
 	@echo "  make open            - Abre o serviço no navegador"
 	@echo "  make install         - Instala as dependências Node.js"
+	@echo "  make test            - Roda os testes automatizados (segurança e integração)"
 	@echo "  make dev             - Inicia o servidor local (dev com reload)"
 	@echo "  make start           - Inicia o servidor local de produção"
 	@echo "=============================================================================="
@@ -136,3 +137,6 @@ run-docker:
 
 clean:
 	rm -rf node_modules npm-debug.log
+test:
+	@echo "🧪 Rodando testes automatizados do Backend..."
+	cd backend && npm test

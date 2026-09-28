@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const compression = require('compression');
 const apiRoutes = require('./routes/api');
+const errorHandler = require('./middlewares/errorHandler');
 const { FIRESTORE_DATABASE_ID, GCP_REGION } = require('./config/firestore');
 
 const app = express();
@@ -67,6 +68,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.use(errorHandler);
+
 const server = app.listen(PORT, () => {
   console.log(`====================================================`);
   console.log(`🚀 GCP PCA Quiz Platform running on port ${PORT}`);
@@ -86,3 +89,4 @@ const handleShutdown = (signal) => {
 
 process.on('SIGTERM', () => handleShutdown('SIGTERM'));
 process.on('SIGINT', () => handleShutdown('SIGINT'));
+module.exports = { app, server };

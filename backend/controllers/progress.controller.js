@@ -4,7 +4,7 @@ const { sanitizeObjectKeys } = require('../utils/validator');
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
-exports.listProgress = async (req, res) => {
+exports.listProgress = async (req, res, next) => {
   if (!firestore) return res.status(503).json({ success: false, fallback: true, message: 'Firestore not initialized' });
   const requestedExamId = req.query.examId ? String(req.query.examId).toLowerCase() : null;
 
@@ -27,11 +27,11 @@ exports.listProgress = async (req, res) => {
     });
     res.json({ success: true, examId: requestedExamId || 'all', progress: progressMap });
   } catch (error) {
-    res.status(500).json({ success: false, fallback: true, error: IS_PRODUCTION ? 'Erro' : error.message });
+    next(error);
   }
 };
 
-exports.getProgress = async (req, res) => {
+exports.getProgress = async (req, res, next) => {
   const quizId = parseInt(req.params.quizId, 10);
   const examId = String(req.query.examId || 'gcp-pca').toLowerCase();
 
@@ -46,11 +46,11 @@ exports.getProgress = async (req, res) => {
     if (!docSnap.exists) return res.json({ success: true, exists: false, examId });
     res.json({ success: true, exists: true, examId, data: docSnap.data() });
   } catch (error) {
-    res.status(500).json({ success: false, fallback: true, error: IS_PRODUCTION ? 'Erro' : error.message });
+    next(error);
   }
 };
 
-exports.saveProgress = async (req, res) => {
+exports.saveProgress = async (req, res, next) => {
   const quizId = parseInt(req.params.quizId, 10);
   const examId = String(req.body.examId || req.query.examId || 'gcp-pca').toLowerCase();
 
@@ -75,11 +75,11 @@ exports.saveProgress = async (req, res) => {
     await firestore.collection('usuarios').doc(req.user.userId).collection('simulados_progresso').doc(docId).set(payload, { merge: true });
     res.json({ success: true, message: 'Progresso salvo', examId, savedAt: payload.savedAt });
   } catch (error) {
-    res.status(500).json({ success: false, fallback: true, error: IS_PRODUCTION ? 'Erro' : error.message });
+    next(error);
   }
 };
 
-exports.deleteProgress = async (req, res) => {
+exports.deleteProgress = async (req, res, next) => {
   const quizId = parseInt(req.params.quizId, 10);
   const examId = String(req.body.examId || req.query.examId || 'gcp-pca').toLowerCase();
 
@@ -92,6 +92,6 @@ exports.deleteProgress = async (req, res) => {
     await firestore.collection('usuarios').doc(req.user.userId).collection('simulados_progresso').doc(docId).delete();
     res.json({ success: true, message: `Progresso removido`, examId });
   } catch (error) {
-    res.status(500).json({ success: false, fallback: true, error: IS_PRODUCTION ? 'Erro' : error.message });
+    next(error);
   }
 };

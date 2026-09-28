@@ -26,8 +26,7 @@ COPY backend/package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
 # Copy server code and data
-COPY backend/server.js ./
-COPY backend/data/ ./data/
+COPY backend/ ./
 
 # Copy compiled frontend from Stage 1 into public/
 COPY --from=frontend-builder /app/backend/public ./public/
