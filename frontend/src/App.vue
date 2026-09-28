@@ -41,9 +41,12 @@ import ConfirmDialog from 'primevue/confirmdialog';
 const quizStore = useQuizStore();
 
 onMounted(async () => {
-  quizStore.initAuth();
+  await quizStore.initAuth();
   await quizStore.fetchExams();
   await quizStore.fetchQuizzes();
+  if (quizStore.isAuthenticated) {
+    await quizStore.fetchProgress();
+  }
 });
 </script>
 
