@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { getQuestionTranslations } from '@/utils/translate';
 
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
@@ -108,12 +109,32 @@ export const useQuizStore = defineStore('quiz', {
     setUILanguage(lang) {
       this.uiLanguage = lang;
       localStorage.setItem('gcp_pca_ui_lang', lang);
-      document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+      document.documentElement.lang = (lang === 'pt' || lang === 'bi') ? 'pt-BR' : 'en';
     },
 
     setQuestionLanguage(lang) {
       this.questionLanguage = lang;
       localStorage.setItem('gcp_pca_question_lang', lang);
+      if (lang === 'pt' || lang === 'bi') {
+        this.translateVisibleQuestions();
+      }
+    },
+
+    async translateVisibleQuestions() {
+      if (!this.activeQuiz || (this.questionLanguage !== 'pt' && this.questionLanguage !== 'bi')) return;
+      
+      const q = this.currentQuestion;
+      if (q) {
+        await getQuestionTranslations(q);
+      }
+      
+      // Prefetch next 2 questions
+      for (let i = this.currentQuestionIndex + 1; i <= this.currentQuestionIndex + 2; i++) {
+        const nextQ = this.activeQuiz.questions[i];
+        if (nextQ && (!nextQ._translations || !nextQ._translations.pt)) {
+          getQuestionTranslations(nextQ).catch(() => {});
+        }
+      }
     },
 
     // Authenticated API Fetch
@@ -336,6 +357,10 @@ export const useQuizStore = defineStore('quiz', {
       }
 
       this.currentScreen = 'quiz';
+      
+      if (this.questionLanguage === 'pt' || this.questionLanguage === 'bi') {
+        this.translateVisibleQuestions();
+      }
     },
 
     // Option selection
@@ -389,6 +414,7 @@ export const useQuizStore = defineStore('quiz', {
         this.currentQuestionIndex = idx;
         this.isMobileNavDrawerOpen = false;
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (this.questionLanguage === 'pt' || this.questionLanguage === 'bi') this.translateVisibleQuestions();
       }
     },
 
@@ -397,6 +423,7 @@ export const useQuizStore = defineStore('quiz', {
         this.currentQuestionIndex++;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (this.selectedMode === 'simulado') this.saveProgress();
+        if (this.questionLanguage === 'pt' || this.questionLanguage === 'bi') this.translateVisibleQuestions();
       }
     },
 
@@ -405,6 +432,7 @@ export const useQuizStore = defineStore('quiz', {
         this.currentQuestionIndex--;
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (this.selectedMode === 'simulado') this.saveProgress();
+        if (this.questionLanguage === 'pt' || this.questionLanguage === 'bi') this.translateVisibleQuestions();
       }
     },
 

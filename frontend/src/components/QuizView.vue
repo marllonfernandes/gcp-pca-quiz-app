@@ -35,24 +35,6 @@
           </div>
 
           <div class="q-meta-right">
-            <!-- Question Language Toggle -->
-            <div class="q-lang-toggle">
-              <button 
-                class="q-lang-btn" 
-                :class="{ active: store.questionLanguage === 'pt' }"
-                @click="store.setQuestionLanguage('pt')"
-              >
-                PT
-              </button>
-              <button 
-                class="q-lang-btn" 
-                :class="{ active: store.questionLanguage === 'en' }"
-                @click="store.setQuestionLanguage('en')"
-              >
-                EN
-              </button>
-            </div>
-
             <!-- Flag Button -->
             <button 
               class="btn-flag" 
@@ -66,9 +48,21 @@
           </div>
         </div>
 
-        <!-- Question Body -->
         <div class="q-body">
-          <p class="q-text">{{ renderedQuestionText }}</p>
+          <div v-if="store.questionLanguage === 'en' || store.questionLanguage === 'bi'">
+            <p class="q-text" :style="store.questionLanguage === 'bi' ? 'margin-bottom: 0.5rem;' : ''">{{ currentQuestion?.question }}</p>
+          </div>
+          
+          <div class="bilingual-block" v-if="store.questionLanguage === 'bi'">
+             <span class="bilingual-label">Português</span>
+             <p class="q-text" v-if="currentQuestion?._translations?.pt">{{ currentQuestion._translations.pt.question }}</p>
+             <p class="q-text" v-else-if="currentQuestion"><em>Traduzindo...</em></p>
+          </div>
+
+          <div v-if="store.questionLanguage === 'pt'">
+             <p class="q-text" v-if="currentQuestion?._translations?.pt">{{ currentQuestion._translations.pt.question }}</p>
+             <p class="q-text" v-else-if="currentQuestion"><em>Traduzindo...</em></p>
+          </div>
 
           <!-- Options List -->
           <div class="options-list">
@@ -85,7 +79,20 @@
             >
               <div class="option-letter-badge">{{ letter }}</div>
               <div class="option-label-text">
-                {{ getOptionText(letter) }}
+                <div v-if="store.questionLanguage === 'en' || store.questionLanguage === 'bi'">
+                  {{ currentQuestion?.options?.[letter] }}
+                </div>
+                
+                <div class="option-bilingual-trans" v-if="store.questionLanguage === 'bi'">
+                  <span>🇧🇷 </span>
+                  <span v-if="currentQuestion?._translations?.pt">{{ currentQuestion._translations.pt.options?.[letter] }}</span>
+                  <span v-else><em>...</em></span>
+                </div>
+
+                <div v-if="store.questionLanguage === 'pt'">
+                  <span v-if="currentQuestion?._translations?.pt">{{ currentQuestion._translations.pt.options?.[letter] }}</span>
+                  <span v-else><em>...</em></span>
+                </div>
               </div>
             </div>
           </div>
@@ -125,7 +132,20 @@
               <strong>{{ isPt ? 'Resposta Correta:' : 'Correct Answer:' }} {{ currentQuestion?.answers?.join(', ') }}</strong>
             </div>
             <div class="explanation-body">
-              {{ renderedExplanationText }}
+              <div v-if="store.questionLanguage === 'en' || store.questionLanguage === 'bi'">
+                {{ currentQuestion?.explanation }}
+              </div>
+              
+              <div class="bilingual-block" style="margin-top:0.75rem;" v-if="store.questionLanguage === 'bi'">
+                <span class="bilingual-label">Explicação em Português</span>
+                <div v-if="currentQuestion?._translations?.pt">{{ currentQuestion._translations.pt.explanation }}</div>
+                <div v-else><em>Traduzindo...</em></div>
+              </div>
+
+              <div v-if="store.questionLanguage === 'pt'">
+                <div v-if="currentQuestion?._translations?.pt">{{ currentQuestion._translations.pt.explanation }}</div>
+                <div v-else><em>Traduzindo...</em></div>
+              </div>
             </div>
           </div>
         </div>
@@ -331,7 +351,7 @@ const isOverviewMode = ref(false);
 const overviewFilter = ref('all'); // 'all' | 'blank' | 'flagged' | 'answered'
 const isHintOpen = ref(false);
 
-const isPt = computed(() => store.uiLanguage === 'pt');
+const isPt = computed(() => store.uiLanguage === 'pt' || store.uiLanguage === 'bi');
 const currentQuestion = computed(() => store.currentQuestion);
 
 const isFlagged = computed(() => {

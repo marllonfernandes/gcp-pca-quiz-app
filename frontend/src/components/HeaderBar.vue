@@ -52,9 +52,9 @@
           <button 
             class="lang-pill-btn" 
             @click="toggleLang"
-            :title="store.uiLanguage === 'pt' ? 'Mudar para Inglês' : 'Switch to Portuguese'"
+            :title="store.uiLanguage === 'pt' ? 'Mudar para Bilíngue' : (store.uiLanguage === 'bi' ? 'Switch to English' : 'Mudar para Português')"
           >
-            <span>{{ store.uiLanguage.toUpperCase() }}</span>
+            <span>{{ store.uiLanguage === 'bi' ? 'PT/EN' : store.uiLanguage.toUpperCase() }}</span>
           </button>
 
           <button 
@@ -63,7 +63,7 @@
             :title="store.uiLanguage === 'pt' ? 'Pausar / Sair do Simulado' : 'Pause / Exit Quiz'"
           >
             <i class="pi pi-times"></i>
-            <span class="exit-label">{{ store.uiLanguage === 'pt' ? 'Sair' : 'Exit' }}</span>
+            <span class="exit-label">{{ store.uiLanguage === 'pt' || store.uiLanguage === 'bi' ? 'Sair' : 'Exit' }}</span>
           </button>
         </div>
       </template>
@@ -95,9 +95,9 @@
           <button 
             class="lang-pill-btn" 
             @click="toggleLang"
-            :title="store.uiLanguage === 'pt' ? 'Mudar idioma para Inglês' : 'Switch language to Portuguese'"
+            :title="store.uiLanguage === 'pt' ? 'Mudar para Bilíngue' : (store.uiLanguage === 'bi' ? 'Switch to English' : 'Mudar para Português')"
           >
-            <span>{{ store.uiLanguage.toUpperCase() }}</span>
+            <span>{{ store.uiLanguage === 'bi' ? 'PT/EN' : store.uiLanguage.toUpperCase() }}</span>
           </button>
 
           <!-- Dark Mode Toggle -->
@@ -140,7 +140,10 @@ const isUrgent = computed(() => store.selectedMode === 'exame' && store.timeRema
 const defaultAvatar = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234285F4"%3E%3Ccircle cx="12" cy="12" r="10"/%3E%3C/svg%3E';
 
 function toggleLang() {
-  const nextLang = store.uiLanguage === 'pt' ? 'en' : 'pt';
+  let nextLang = 'pt';
+  if (store.uiLanguage === 'pt') nextLang = 'bi';
+  else if (store.uiLanguage === 'bi') nextLang = 'en';
+  else nextLang = 'pt';
   store.setUILanguage(nextLang);
   store.setQuestionLanguage(nextLang);
 }
