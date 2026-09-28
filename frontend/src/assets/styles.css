@@ -77,3 +77,35 @@ button {
 }
 
 
+
+/* Bilingual Mode Styles */
+.bilingual-block {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-subtle);
+  border-left: 3px solid var(--primary);
+  border-radius: 4px;
+  color: var(--text-primary);
+}
+
+.bilingual-label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.5px;
+}
+
+.option-bilingual-trans {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.bilingual-block .q-text {
+  margin-bottom: 0 !important;
+}
