@@ -209,15 +209,16 @@ function toggleExpand(id) {
   expandedItems.value[id] = !expandedItems.value[id];
 }
 
-const totalQuestions = computed(() => quizStore.activeQuestions.length || 0);
+const totalQuestions = computed(() => quizStore.activeQuiz?.questions?.length || 0);
 
 const resultsData = computed(() => {
-  return quizStore.activeQuestions.map((q, idx) => {
-    const userAns = quizStore.userAnswers[idx] || [];
-    const correctAns = Array.isArray(q.answer) ? q.answer : [q.answer];
+  const questions = quizStore.activeQuiz?.questions || [];
+  return questions.map((q, idx) => {
+    const userAns = quizStore.userAnswers[q.id] || [];
+    const correctAns = Array.isArray(q.answers) ? q.answers : (q.answer ? (Array.isArray(q.answer) ? q.answer : [q.answer]) : []);
 
     // Check if user answer matches correct answers
-    const isCorrect = userAns.length === correctAns.length &&
+    const isCorrect = userAns.length > 0 && userAns.length === correctAns.length &&
       userAns.slice().sort().every((val, i) => val === correctAns.slice().sort()[i]);
 
     return {
@@ -278,7 +279,10 @@ const filteredQuestions = computed(() => {
 });
 
 function getLetter(idx) {
-  return String.fromCharCode(65 + idx);
+  if (typeof idx === 'string' && idx.length === 1 && /[A-Z]/.test(idx)) {
+    return idx;
+  }
+  return String.fromCharCode(65 + Number(idx));
 }
 
 function getQuestionText(q) {
