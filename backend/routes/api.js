@@ -50,6 +50,7 @@ router.get('/exams', quizController.listExams);
 router.get('/exams/:examId', quizController.getExam);
 router.get('/quizzes', requireAuth, quizController.listQuizzes);
 router.get('/quizzes/:quizId', requireAuth, quizController.getQuiz);
+router.post('/quizzes/:quizId/questions/:questionId/translation', requireAuth, quizController.saveTranslation);
 
 // Progress
 router.get('/progress', requireAuth, progressController.listProgress);

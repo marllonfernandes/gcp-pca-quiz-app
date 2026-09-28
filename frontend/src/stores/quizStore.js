@@ -127,14 +127,14 @@ export const useQuizStore = defineStore('quiz', {
       
       const q = this.currentQuestion;
       if (q) {
-        await getQuestionTranslations(q);
+        await getQuestionTranslations(q, this.activeQuiz.id, this.authToken);
       }
       
       // Prefetch next 2 questions
       for (let i = this.currentQuestionIndex + 1; i <= this.currentQuestionIndex + 2; i++) {
         const nextQ = this.activeQuiz.questions[i];
         if (nextQ && (!nextQ._translations || !nextQ._translations.pt)) {
-          getQuestionTranslations(nextQ).catch(() => {});
+          getQuestionTranslations(nextQ, this.activeQuiz.id, this.authToken).catch(() => {});
         }
       }
     },

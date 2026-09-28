@@ -13,10 +13,10 @@ export async function translateToPortuguese(text) {
 
   // Preserve code blocks with markers
   const codeBlocks = [];
-  let textToTranslate = text.replace(/```([a-zA-Z]*)\n([\s\S]*?)```/g, (match) => {
+  let textToTranslate = text.replace(/```([a-zA-Z]*)\s*\n?([\s\S]*?)```/g, (match) => {
     const idx = codeBlocks.length;
     codeBlocks.push(match);
-    return `[[CODE_${idx}]]`;
+    return `___CODE_BLOCK_${idx}___`;
   });
 
   try {
@@ -32,7 +32,7 @@ export async function translateToPortuguese(text) {
     }
 
     // Restore code blocks
-    translated = translated.replace(/\[\[CODE_(\d+)\]\]/g, (m, idx) => {
+    translated = translated.replace(/___(?:CODE_BLOCK|BLOCO_DE_CÓDIGO)_?(\d+)___/gi, (m, idx) => {
       return codeBlocks[Number(idx)] || m;
     });
 
@@ -48,7 +48,7 @@ export async function translateToPortuguese(text) {
   }
 }
 
-export async function getQuestionTranslations(question) {
+export async function getQuestionTranslations(question, quizId = null, authToken = null) {
   if (!question) return null;
   if (question._translations && question._translations.pt) {
     return question._translations.pt;
@@ -76,5 +76,20 @@ export async function getQuestionTranslations(question) {
 
   question._translations = question._translations || {};
   question._translations.pt = ptData;
+
+  // Background save to DB if logged in and we have quizId
+  if (quizId && authToken && question.id) {
+    try {
+      fetch(`/api/quizzes/${quizId}/questions/${question.id}/translation`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({ pt: ptData })
+      }).catch(err => console.warn('Translation save error:', err));
+    } catch(e) {}
+  }
+
   return ptData;
 }

@@ -140,3 +140,74 @@ exports.getQuiz = async (req, res, next) => {
   }
   res.status(404).json({ success: false, message: `Simulado não encontrado.` });
 };
+exports.saveTranslation = async (req, res, next) => {
+  const quizId = parseInt(req.params.quizId, 10);
+  const questionId = req.params.questionId;
+  const examId = String(req.query.examId || 'gcp-pca').toLowerCase();
+  const ptData = req.body.pt;
+
+  if (isNaN(quizId) || !questionId || !ptData) {
+    return res.status(400).json({ success: false, message: 'Invalid data' });
+  }
+
+  // Only update for PCA in this prototype
+  if (examId !== 'gcp-pca') {
+    return res.status(400).json({ success: false, message: 'Only gcp-pca supported' });
+  }
+
+  try {
+    // 1. Update in local file (so it persists across restarts before seeding)
+    let localDataUpdated = false;
+    const jsonPath = path.join(__dirname, '..', 'data', 'quiz_data.json');
+    if (fs.existsSync(jsonPath)) {
+      const content = fs.readFileSync(jsonPath, 'utf8');
+      const data = JSON.parse(content);
+      const quiz = data.quizzes.find(q => q.id === quizId);
+      if (quiz) {
+        const question = quiz.questions.find(q => q.id === questionId);
+        if (question) {
+          question._translations = question._translations || {};
+          question._translations.pt = ptData;
+          fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2));
+          localDataUpdated = true;
+          localQuizDataCache = data; // update memory cache
+        }
+      }
+    }
+
+    // 2. Update in Firestore
+    let firestoreUpdated = false;
+    if (firestore) {
+      const docRef = firestore.collection('simulados_catalogo').doc(`quiz_${quizId}`);
+      const docSnap = await docRef.get();
+      if (docSnap.exists) {
+        const quizData = docSnap.data();
+        const qIndex = quizData.questions.findIndex(q => q.id === questionId);
+        if (qIndex !== -1) {
+          quizData.questions[qIndex]._translations = quizData.questions[qIndex]._translations || {};
+          quizData.questions[qIndex]._translations.pt = ptData;
+          await docRef.update({
+            questions: quizData.questions
+          });
+          firestoreUpdated = true;
+          
+          // clear cache
+          const cacheKey = `${examId}_${quizId}`;
+          cachedQuizzes.delete(cacheKey);
+          cachedQuizzes.delete(quizId);
+        }
+      }
+    }
+
+    return res.json({ 
+      success: true, 
+      message: 'Translation saved',
+      localUpdated: localDataUpdated,
+      firestoreUpdated: firestoreUpdated
+    });
+
+  } catch (err) {
+    console.error('Error saving translation:', err);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
