@@ -144,7 +144,7 @@
           </div>
 
           <div class="review-item-body">
-            <p class="review-question-text">{{ getQuestionText(item.q) }}</p>
+            <p class="review-question-text" v-html="formatQuestionText(getQuestionText(item.q))"></p>
 
             <!-- Collapsible details (always shown or toggled) -->
             <div v-show="expandedItems[item.q.id] ?? true" class="review-details">
@@ -157,7 +157,7 @@
                   :class="getChoiceClass(item, cIdx)"
                 >
                   <span class="choice-letter">{{ getLetter(cIdx) }}</span>
-                  <span class="choice-text">{{ getOptionText(choice) }}</span>
+                  <span class="choice-text" v-html="formatQuestionText(getOptionText(choice))"></span>
                   <span v-if="isAnswerChosen(item, cIdx)" class="choice-tag user-tag">
                     {{ quizStore.lang === 'pt' ? 'Sua escolha' : 'Your answer' }}
                   </span>
@@ -173,7 +173,7 @@
                   <i class="pi pi-info-circle"></i>
                   <span>{{ quizStore.lang === 'pt' ? 'Justificativa Arquitetural' : 'Architectural Rationale' }}</span>
                 </div>
-                <p>{{ getRationaleText(item.q) }}</p>
+                <p v-html="formatQuestionText(getRationaleText(item.q))"></p>
 
                 <div v-if="item.q.docUrl" class="review-doc-link">
                   <a :href="item.q.docUrl" target="_blank" rel="noopener noreferrer">
@@ -198,6 +198,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useQuizStore } from '../stores/quizStore.js';
+import { formatQuestionText } from '@/utils/formatters';
 
 const quizStore = useQuizStore();
 
