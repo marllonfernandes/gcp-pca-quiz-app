@@ -52,6 +52,7 @@ onMounted(async () => {
   overflow-x: hidden;
   width: 100%;
   max-width: 100%;
+  box-sizing: border-box !important;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -64,6 +65,10 @@ onMounted(async () => {
   flex: 1;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box !important;
+  min-width: 0;
 }
 
 /* Custom PrimeVue ConfirmDialog styling for mobile */

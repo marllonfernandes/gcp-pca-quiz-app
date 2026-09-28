@@ -177,6 +177,7 @@ function handleLogout() {
 
 <style scoped>
 .app-header {
+  box-sizing: border-box !important;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-color);
   position: sticky;

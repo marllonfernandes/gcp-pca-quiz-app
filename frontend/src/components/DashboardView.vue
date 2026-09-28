@@ -329,12 +329,19 @@ async function handleStartQuiz(quizId, resume) {
 <style scoped>
 .dashboard-view {
   max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box !important;
   margin: 0 auto;
   padding: 1.5rem 1.25rem 3rem 1.25rem;
+  overflow-x: hidden;
 }
 
 /* Hero Banner */
 .hero-banner {
+  min-width: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   background: linear-gradient(135deg, rgba(26, 115, 232, 0.08) 0%, rgba(66, 133, 244, 0.02) 100%);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
@@ -418,6 +425,11 @@ async function handleStartQuiz(quizId, resume) {
 }
 
 .mode-card {
+  box-sizing: border-box !important;
+  min-width: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   border: 1.5px solid var(--border-color);
   background: var(--bg-surface);
   border-radius: var(--radius-md);
@@ -494,6 +506,10 @@ async function handleStartQuiz(quizId, resume) {
 }
 
 .quiz-card {
+  min-width: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   border: 1px solid var(--border-color);
   background: var(--bg-surface);
   border-radius: var(--radius-md);
@@ -525,6 +541,10 @@ async function handleStartQuiz(quizId, resume) {
   font-size: 1.02rem;
   font-weight: 700;
   color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  margin-right: 0.5rem;
+  word-wrap: break-word;
 }
 
 .quiz-badge-count {
@@ -774,18 +794,45 @@ async function handleStartQuiz(quizId, resume) {
 @media (max-width: 768px) {
   .dashboard-view {
     padding: 1rem 0.85rem 2.5rem 0.85rem;
+    overflow-x: hidden;
   }
   .hero-banner {
+  min-width: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
     padding: 1.25rem 1rem;
+    overflow: hidden;
   }
   .hero-banner h2 {
     font-size: 1.25rem;
   }
   .mode-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .mode-card {
+  box-sizing: border-box !important;
+  min-width: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+    width: 100%;
+    box-sizing: border-box;
   }
   .quizzes-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .quiz-card {
+  min-width: 0;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+    width: 100%;
+    box-sizing: border-box;
   }
   .saved-action-group {
     flex-direction: column;
