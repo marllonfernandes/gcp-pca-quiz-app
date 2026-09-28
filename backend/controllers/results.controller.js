@@ -4,7 +4,7 @@ const { sanitizeObjectKeys } = require('../utils/validator');
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
-exports.saveResult = async (req, res) => {
+exports.saveResult = async (req, res, next) => {
   let { examId, quizId, quizTitle, mode, scorePercentage, correctCount, wrongCount, unansweredCount, totalQuestions, timeElapsed, timeSpentFormatted, breakdown } = req.body;
   if (!firestore) return res.status(503).json({ success: false, fallback: true, message: 'Firestore not available' });
 
@@ -27,11 +27,11 @@ exports.saveResult = async (req, res) => {
     await docRef.set(payload);
     res.json({ success: true, id: docRef.id, examId: selectedExamId, message: 'Resultado gravado' });
   } catch (error) {
-    res.status(500).json({ success: false, fallback: true, error: IS_PRODUCTION ? 'Erro' : error.message });
+    next(error);
   }
 };
 
-exports.listResults = async (req, res) => {
+exports.listResults = async (req, res, next) => {
   if (!firestore) return res.status(503).json({ success: false, fallback: true, message: 'Firestore not available' });
   const requestedExamId = req.query.examId ? String(req.query.examId).toLowerCase() : null;
 
@@ -45,6 +45,6 @@ exports.listResults = async (req, res) => {
     });
     res.json({ success: true, examId: requestedExamId || 'all', results });
   } catch (error) {
-    res.status(500).json({ success: false, fallback: true, error: IS_PRODUCTION ? 'Erro' : error.message });
+    next(error);
   }
 };

@@ -47,7 +47,7 @@ exports.getExam = (req, res) => {
   res.json({ success: true, exam });
 };
 
-exports.listQuizzes = async (req, res) => {
+exports.listQuizzes = async (req, res, next) => {
   const examId = String(req.query.examId || 'gcp-pca').toLowerCase();
   const forceRefresh = canBypassCache(req);
   const now = Date.now();
@@ -103,7 +103,7 @@ exports.listQuizzes = async (req, res) => {
   res.status(503).json({ success: false, message: 'Dados indisponíveis.' });
 };
 
-exports.getQuiz = async (req, res) => {
+exports.getQuiz = async (req, res, next) => {
   const quizId = parseInt(req.params.quizId, 10);
   const examId = String(req.query.examId || 'gcp-pca').toLowerCase();
 
