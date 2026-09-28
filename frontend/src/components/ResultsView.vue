@@ -48,11 +48,11 @@
 
       <!-- Action Buttons -->
       <div class="result-actions">
-        <button class="btn btn-primary" @click="retakeQuiz">
+        <button class="result-btn result-btn-primary" @click="retakeQuiz">
           <i class="pi pi-refresh"></i>
           <span>{{ quizStore.lang === 'pt' ? 'Refazer Simulado' : 'Retake Exam' }}</span>
         </button>
-        <button class="btn btn-secondary" @click="backToDashboard">
+        <button class="result-btn result-btn-secondary" @click="backToDashboard">
           <i class="pi pi-arrow-left"></i>
           <span>{{ quizStore.lang === 'pt' ? 'Painel de Simulados' : 'Back to Dashboard' }}</span>
         </button>
@@ -121,72 +121,77 @@
         </div>
       </div>
 
-      <!-- Question List -->
-      <div class="review-list">
-        <div 
-          v-for="(item, idx) in filteredQuestions" 
-          :key="item.q.id || idx"
-          class="review-item"
-          :class="item.isCorrect ? 'item-correct' : 'item-wrong'"
+      <!-- Question Navigation Grid -->
+      <div class="question-map-grid">
+        <button
+          v-for="item in filteredQuestions"
+          :key="item.q.id || item.originalIndex"
+          class="map-node"
+          :class="[item.isCorrect ? 'node-correct' : 'node-wrong', { active: selectedReviewItem && selectedReviewItem.q.id === item.q.id }]"
+          @click="selectedReviewItem = item"
         >
-          <div class="review-item-header" @click="toggleExpand(item.q.id)">
-            <div class="review-item-meta">
-              <span class="q-badge" :class="item.isCorrect ? 'badge-correct' : 'badge-wrong'">
-                <i :class="item.isCorrect ? 'pi pi-check' : 'pi pi-times'"></i>
-                <span>Q{{ item.originalIndex + 1 }}</span>
-              </span>
-              <span class="q-domain-tag">{{ item.q.domain || 'Google Cloud' }}</span>
-            </div>
+          {{ item.originalIndex + 1 }}
+        </button>
+      </div>
 
-            <div class="review-expand-btn">
-              <i :class="expandedItems[item.q.id] ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"></i>
+      <!-- Selected Question Review -->
+      <div class="selected-review-container">
+        <div v-if="selectedReviewItem" class="review-item" :class="selectedReviewItem.isCorrect ? 'item-correct' : 'item-wrong'">
+          <div class="review-item-header">
+            <div class="review-item-meta">
+              <span class="q-badge" :class="selectedReviewItem.isCorrect ? 'badge-correct' : 'badge-wrong'">
+                <i :class="selectedReviewItem.isCorrect ? 'pi pi-check' : 'pi pi-times'"></i>
+                <span>Q{{ selectedReviewItem.originalIndex + 1 }}</span>
+              </span>
+              <span class="q-domain-tag">{{ selectedReviewItem.q.domain || 'Google Cloud' }}</span>
             </div>
           </div>
 
           <div class="review-item-body">
-            <p class="review-question-text" v-html="formatQuestionText(getQuestionText(item.q))"></p>
+            <p class="review-question-text" v-html="formatQuestionText(getQuestionText(selectedReviewItem.q))"></p>
 
-            <!-- Collapsible details (always shown or toggled) -->
-            <div v-show="expandedItems[item.q.id] ?? true" class="review-details">
-              <!-- Choices list -->
+            <div class="review-details">
               <div class="review-choices">
                 <div 
-                  v-for="(choice, cIdx) in item.q.options" 
+                  v-for="(choice, cIdx) in selectedReviewItem.q.options" 
                   :key="cIdx"
                   class="review-choice"
-                  :class="getChoiceClass(item, cIdx)"
+                  :class="getChoiceClass(selectedReviewItem, cIdx)"
                 >
                   <span class="choice-letter">{{ getLetter(cIdx) }}</span>
                   <span class="choice-text" v-html="formatQuestionText(getOptionText(choice))"></span>
-                  <span v-if="isAnswerChosen(item, cIdx)" class="choice-tag user-tag">
+                  <span v-if="isAnswerChosen(selectedReviewItem, cIdx)" class="choice-tag user-tag">
                     {{ quizStore.lang === 'pt' ? 'Sua escolha' : 'Your answer' }}
                   </span>
-                  <span v-if="isAnswerCorrect(item, cIdx)" class="choice-tag correct-tag">
+                  <span v-if="isAnswerCorrect(selectedReviewItem, cIdx)" class="choice-tag correct-tag">
                     {{ quizStore.lang === 'pt' ? 'Correta' : 'Correct answer' }}
                   </span>
                 </div>
               </div>
 
-              <!-- Rationale -->
-              <div v-if="item.q.rationale || item.q.explanation" class="review-rationale">
+              <div v-if="selectedReviewItem.q.rationale || selectedReviewItem.q.explanation" class="review-rationale">
                 <div class="rationale-header">
                   <i class="pi pi-info-circle"></i>
                   <span>{{ quizStore.lang === 'pt' ? 'Justificativa Arquitetural' : 'Architectural Rationale' }}</span>
                 </div>
-                <p v-html="formatQuestionText(getRationaleText(item.q))"></p>
+                <p v-html="formatQuestionText(getRationaleText(selectedReviewItem.q))"></p>
 
-                <div v-if="item.q.docUrl" class="review-doc-link">
-                  <a :href="item.q.docUrl" target="_blank" rel="noopener noreferrer">
+                <div v-if="selectedReviewItem.q.docUrl" class="review-doc-link">
+                  <a :href="selectedReviewItem.q.docUrl" target="_blank" rel="noopener noreferrer">
                     <i class="pi pi-external-link"></i>
-                    <span>{{ quizStore.lang === 'pt' ? 'Documentação Oficial Google Cloud' : 'Google Cloud Official Docs' }}</span>
+                    <span>{{ quizStore.lang === 'pt' ? 'Documentação Oficial' : 'Official Docs' }}</span>
                   </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div v-if="filteredQuestions.length === 0" class="empty-filter">
+        
+        <div v-else-if="filteredQuestions.length > 0" class="empty-filter">
+          <i class="pi pi-th-large empty-icon"></i>
+          <p>{{ quizStore.lang === 'pt' ? 'Selecione uma questão no mapa acima para ver a justificativa.' : 'Select a question from the map above to view the rationale.' }}</p>
+        </div>
+        <div v-else class="empty-filter">
           <i class="pi pi-check-circle empty-icon"></i>
           <p>{{ quizStore.lang === 'pt' ? 'Nenhuma questão neste filtro.' : 'No questions matching this filter.' }}</p>
         </div>
@@ -196,18 +201,18 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useQuizStore } from '../stores/quizStore.js';
 import { formatQuestionText } from '@/utils/formatters';
 
 const quizStore = useQuizStore();
 
 const filter = ref('all'); // 'all', 'wrong', 'correct'
-const expandedItems = ref({});
+const selectedReviewItem = ref(null);
 
-function toggleExpand(id) {
-  expandedItems.value[id] = !expandedItems.value[id];
-}
+watch(filter, () => {
+  selectedReviewItem.value = null;
+});
 
 const totalQuestions = computed(() => quizStore.activeQuiz?.questions?.length || 0);
 
@@ -320,7 +325,12 @@ function getChoiceClass(item, cIdx) {
 }
 
 function retakeQuiz() {
-  quizStore.startQuiz(quizStore.activeQuizId, quizStore.quizMode);
+  const quizId = quizStore.activeQuiz?.id;
+  if (!quizId) {
+    quizStore.currentScreen = 'dashboard';
+    return;
+  }
+  quizStore.startQuiz(quizId, false);
 }
 
 function backToDashboard() {
@@ -480,6 +490,54 @@ function backToDashboard() {
   justify-content: center;
 }
 
+.result-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 48px;
+}
+
+.result-btn i {
+  font-size: 1rem;
+}
+
+.result-btn-primary {
+  background: #1a73e8;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+}
+
+.result-btn-primary:hover {
+  background: #1558b0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(26, 115, 232, 0.4);
+}
+
+.result-btn-primary:active {
+  transform: translateY(0);
+}
+
+.result-btn-secondary {
+  background: var(--surface-card);
+  color: var(--text-color);
+  border: 2px solid var(--surface-border);
+}
+
+.result-btn-secondary:hover {
+  background: var(--surface-section);
+  border-color: #1a73e8;
+  color: #1a73e8;
+  transform: translateY(-1px);
+}
+
 /* Card General */
 .card {
   background: var(--surface-card);
@@ -598,13 +656,58 @@ function backToDashboard() {
   border-color: #34a853;
 }
 
-/* Review Item */
-.review-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* Question Map Grid */
+.question-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  padding: 1.2rem;
+  background: var(--surface-section);
+  border-radius: 12px;
+  border: 1px solid var(--surface-border);
 }
 
+.map-node {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #fff;
+  padding: 0;
+}
+
+.map-node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  filter: brightness(1.1);
+}
+
+.map-node.node-correct {
+  background-color: #34a853;
+}
+
+.map-node.node-wrong {
+  background-color: #ea4335;
+}
+
+.map-node.active {
+  transform: scale(1.15);
+  z-index: 2;
+  box-shadow: 0 0 0 2px var(--surface-card), 0 0 0 4px var(--text-color);
+}
+
+.selected-review-container {
+  margin-top: 1rem;
+}
+
+/* Review Item */
 .review-item {
   border: 1px solid var(--surface-border);
   border-radius: 12px;
@@ -793,7 +896,7 @@ function backToDashboard() {
     flex-direction: column;
     width: 100%;
   }
-  .result-actions button {
+  .result-btn {
     width: 100%;
     justify-content: center;
   }
