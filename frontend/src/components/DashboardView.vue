@@ -613,6 +613,9 @@ async function handleStartQuiz(quizId, resume) {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.25rem;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .guide-header {
@@ -637,6 +640,8 @@ async function handleStartQuiz(quizId, resume) {
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
 }
 
 .guide-table {
