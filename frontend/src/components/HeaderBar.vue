@@ -184,6 +184,8 @@ function handleLogout() {
   z-index: 100;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  width: 100%;
+  max-width: 100%;
 }
 
 .header-container {

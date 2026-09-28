@@ -49,6 +49,9 @@ onMounted(async () => {
 
 <style>
 .app-shell {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
