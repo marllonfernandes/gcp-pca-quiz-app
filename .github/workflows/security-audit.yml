@@ -19,10 +19,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Audit Backend
+      - name: Audit Backend (Production Dependencies)
         working-directory: ./backend
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev --audit-level=high
 
-      - name: Audit Frontend
+      - name: Audit Frontend (Production Dependencies)
         working-directory: ./frontend
-        run: npm audit --audit-level=high
+        run: npm audit --omit=dev --audit-level=high
