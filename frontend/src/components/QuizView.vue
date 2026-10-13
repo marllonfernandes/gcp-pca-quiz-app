@@ -93,6 +93,14 @@
                   <span v-else><em>...</em></span>
                 </div>
               </div>
+
+              <!-- Visual Status Icon (when revealed in Simulado) -->
+              <div v-if="isRevealed && isAnswerCorrect(letter)" class="option-feedback-icon correct" title="Correta">
+                <i class="pi pi-check-circle"></i>
+              </div>
+              <div v-else-if="isRevealed && isOptionSelected(letter) && !isAnswerCorrect(letter)" class="option-feedback-icon wrong" title="Incorreta">
+                <i class="pi pi-times-circle"></i>
+              </div>
             </div>
           </div>
 
@@ -360,7 +368,18 @@ const isFlagged = computed(() => {
 
 const isRevealed = computed(() => {
   const qid = currentQuestion.value?.id;
-  return Boolean(qid && store.revealedExplanations[qid]);
+  if (!qid) return false;
+  if (store.revealedExplanations[qid] !== undefined) {
+    return Boolean(store.revealedExplanations[qid]);
+  }
+  // No modo simulado, se a questão já foi respondida com a quantidade necessária de opções
+  if (store.selectedMode === 'simulado') {
+    const q = currentQuestion.value;
+    const requiredCount = q?.selectCount || 1;
+    const answeredCount = store.userAnswers[qid]?.length || 0;
+    return answeredCount >= requiredCount;
+  }
+  return false;
 });
 
 const sortedOptionLetters = computed(() => {
@@ -624,13 +643,46 @@ function promptFinish() {
 }
 
 .option-row.correct-reveal {
-  border-color: var(--success);
-  background: var(--success-light);
+  border-color: var(--success) !important;
+  background: var(--success-light) !important;
+  box-shadow: 0 0 0 1.5px var(--success) !important;
+}
+
+.option-row.correct-reveal .option-letter-badge {
+  background: var(--success) !important;
+  color: #fff !important;
+  border-color: var(--success) !important;
 }
 
 .option-row.wrong-reveal {
-  border-color: var(--error);
-  background: var(--error-light);
+  border-color: var(--error) !important;
+  background: var(--error-light) !important;
+  box-shadow: 0 0 0 1.5px var(--error) !important;
+}
+
+.option-row.wrong-reveal .option-letter-badge {
+  background: var(--error) !important;
+  color: #fff !important;
+  border-color: var(--error) !important;
+}
+
+.option-feedback-icon {
+  margin-left: auto;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex-shrink: 0;
+  padding-left: 0.5rem;
+}
+
+.option-feedback-icon.correct {
+  color: var(--success);
+}
+
+.option-feedback-icon.wrong {
+  color: var(--error);
 }
 
 .option-letter-badge {

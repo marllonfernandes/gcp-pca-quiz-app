@@ -386,6 +386,7 @@ export const useQuizStore = defineStore('quiz', {
         if (parsed) {
           this.userAnswers = parsed.userAnswers || {};
           this.flaggedQuestions = parsed.flaggedQuestions || {};
+          this.revealedExplanations = parsed.revealedExplanations || {};
           this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
           this.timeElapsed = parsed.timeElapsed || 0;
           
@@ -435,6 +436,11 @@ export const useQuizStore = defineStore('quiz', {
       }
 
       if (this.selectedMode === 'simulado') {
+        const requiredCount = q.selectCount || 1;
+        const currentCount = this.userAnswers[q.id]?.length || 0;
+        if (currentCount >= requiredCount) {
+          this.revealedExplanations[q.id] = true;
+        }
         this.saveProgress();
       }
     },
@@ -455,7 +461,13 @@ export const useQuizStore = defineStore('quiz', {
     revealExplanation() {
       const q = this.currentQuestion;
       if (!q) return;
-      this.revealedExplanations[q.id] = !this.revealedExplanations[q.id];
+      const isCurrentlyRevealed = this.revealedExplanations[q.id] !== undefined
+        ? this.revealedExplanations[q.id]
+        : (this.selectedMode === 'simulado' && (this.userAnswers[q.id]?.length || 0) >= (q.selectCount || 1));
+      this.revealedExplanations[q.id] = !isCurrentlyRevealed;
+      if (this.selectedMode === 'simulado') {
+        this.saveProgress();
+      }
     },
 
     goToQuestion(idx) {
